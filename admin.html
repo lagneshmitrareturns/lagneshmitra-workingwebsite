@@ -4,9 +4,8 @@
   <meta charset="UTF-8">
   <title>LagneshMitra Admin Panel</title>
   <link rel="stylesheet" href="style.css">
-  <script defer src="firebase-config.js"></script>
-  <script defer src="admin.js"></script>
 </head>
+
 <body>
 
   <header>
@@ -37,6 +36,71 @@
   <footer>
     Admin Panel | LagneshMitra & Zonies Hub Originals
   </footer>
+
+  <!-- FIREBASE MODULE -->
+  <script type="module">
+    import { db } from "./firebase-config.js";
+    import {
+      collection,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+    // ===== LOAD CONSULTATION QUERIES =====
+    async function loadConsultations() {
+      const querySnapshot = await getDocs(collection(db, "lm_queries"));
+      const list = document.getElementById("consultationList");
+      list.innerHTML = "";
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        list.innerHTML += `
+          <div class="service-card">
+            <h3>${data.fullName}</h3>
+            <p>Email: ${data.email}</p>
+            <p>Message: ${data.message || "—"}</p>
+            <p>Status: ${data.status}</p>
+          </div>
+        `;
+      });
+    }
+
+
+    // ===== LOAD BOOK INTEREST =====
+    async function loadBookInterest() {
+      const querySnapshot = await getDocs(collection(db, "lm_book_interest"));
+      const list = document.getElementById("bookInterestList");
+      list.innerHTML = "";
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        list.innerHTML += `
+          <div class="service-card">
+            <h3>${data.fullName}</h3>
+            <p>Email: ${data.email}</p>
+            <p>Interested In: ${data.interestedIn}</p>
+          </div>
+        `;
+      });
+    }
+
+
+    // ===== LOAD COUNTERS =====
+    async function loadCounters() {
+      const visitSnapshot = await getDocs(collection(db, "lm_visits"));
+      document.getElementById("totalVisits").innerText = visitSnapshot.size;
+
+      const bookSnapshot = await getDocs(collection(db, "lm_book_views"));
+      document.getElementById("bookViews").innerText = bookSnapshot.size;
+    }
+
+
+    // ===== INITIAL LOAD =====
+    loadConsultations();
+    loadBookInterest();
+    loadCounters();
+
+  </script>
 
 </body>
 </html>
