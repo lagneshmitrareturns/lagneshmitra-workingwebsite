@@ -2,7 +2,10 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LagneshMitra Pen Animation</title>
+<title>LagneshMitra Loading</title>
+
+<!-- Elegant Cursive Font -->
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
 
 <style>
 body{
@@ -14,73 +17,74 @@ body{
   height:100vh;
   flex-direction:column;
   overflow:hidden;
+  text-align:center;
 }
 
-/* SVG size */
-svg{
-  width:90%;
-  max-width:800px;
-}
-
-/* Stroke animation */
-text{
-  fill:none;
-  stroke:#000;
-  stroke-width:2;
-  stroke-dasharray:1200;
-  stroke-dashoffset:1200;
-  animation: draw 4s ease forwards;
-  font-family: 'Brush Script MT', cursive;
-  font-size:80px;
-}
-
-@keyframes draw{
-  to{
-    stroke-dashoffset:0;
-  }
-}
-
-/* Underline */
-.line{
+/* Main Text */
+.logo{
+  font-family:'Great Vibes', cursive;
+  font-size:70px;
+  color:#000;
+  white-space:nowrap;
+  overflow:hidden;
+  border-right:3px solid black;
   width:0;
-  height:4px;
-  background:#000;
-  margin-top:10px;
-  animation: lineGrow 1.5s ease forwards;
-  animation-delay:4s;
+  animation: typing 3s steps(20,end) forwards,
+             blink 0.8s infinite;
 }
 
-@keyframes lineGrow{
-  to{
-    width:400px;
-  }
+/* Typing effect */
+@keyframes typing{
+  from{ width:0 }
+  to{ width: 550px }
+}
+
+/* Cursor blink */
+@keyframes blink{
+  50%{ border-color: transparent }
+}
+
+/* Underline stroke */
+.line{
+  height:3px;
+  background:#000;
+  width:0;
+  margin-top:10px;
+  animation: expand 1s ease forwards;
+  animation-delay:3.2s;
+}
+
+@keyframes expand{
+  to{ width: 350px }
 }
 
 /* Tagline */
 .tagline{
   margin-top:25px;
   font-size:18px;
+  letter-spacing:1px;
   opacity:0;
   animation: fadeIn 1s ease forwards;
-  animation-delay:5.5s;
-  letter-spacing:1px;
+  animation-delay:4.2s;
 }
 
 @keyframes fadeIn{
-  to{ opacity:1; }
+  to{ opacity:1 }
 }
 
+/* Mobile */
+@media(max-width:768px){
+  .logo{
+    font-size:45px;
+  }
+}
 </style>
 </head>
 
 <body>
 
-<svg viewBox="0 0 800 150">
-  <text x="50" y="100">LagneshMitra</text>
-</svg>
-
+<div class="logo">LagneshMitra</div>
 <div class="line"></div>
-
 <div class="tagline">
 Astrology • Next-Gen Publishing Studio
 </div>
