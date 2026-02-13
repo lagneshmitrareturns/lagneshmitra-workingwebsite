@@ -3,98 +3,136 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LagneshMitra | Vedic Astrology & Publishing</title>
 
-  <meta name="description" content="Vedic Astrology with Structure. Book early access for Kaalprehari – The Dera Massacre. Consultation & Commercial Thriller Publishing.">
+  <title>LagneshMitra | Vedic Astrology & Publishing Factory</title>
+
+  <meta name="description"
+        content="Structured Vedic Astrology. Marriage, Karmic Debt, Advanced Analysis. Early Access Booking Open for Kaalprehari – The Dera Massacre.">
+
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-  <!-- HERO SECTION -->
-  <section class="hero">
-    <h1>LagneshMitra</h1>
-    <p>Vedic Astrology with Structure • Not Guesswork</p>
+  <!-- HEADER -->
+  <header>
+    <div class="container">
+      <div class="logo">LagneshMitra</div>
+      <div class="tagline">Vedic Astrology • Structured • Not Guesswork</div>
+    </div>
+  </header>
 
-    <div class="cta-buttons">
-      <a href="#consult" class="btn">Book Consultation</a>
-      <a href="#book" class="btn secondary">Kaalprehari – Early Access</a>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <h1>Clarity. Timing. Structure.</h1>
+      <p>Astrology with Logic • Publishing with Vision</p>
+
+      <div class="cta-buttons">
+        <a href="#consult" class="btn">Book Consultation</a>
+        <a href="#book" class="btn secondary">Kaalprehari – Early Access</a>
+      </div>
     </div>
   </section>
 
 
-  <!-- SERVICES -->
+  <!-- CONSULTATION SECTION -->
   <section id="consult" class="section">
-    <h2>Consultation Services</h2>
+    <div class="container">
 
-    <ul class="services">
-      <li>Short Structured Consultation</li>
-      <li>Summary Personality Report</li>
-      <li>Marriage & Compatibility Analysis</li>
-      <li>Karmic Debt Report (D30/D60)</li>
-      <li>Advanced Premium Analysis</li>
-    </ul>
+      <h2>Consultation Services</h2>
 
-    <form id="consultForm" class="form">
-      <input type="text" id="fullName" placeholder="Full Name" required />
-      <input type="email" id="email" placeholder="Email Address" required />
-      <textarea id="message" placeholder="Your Query"></textarea>
-      <button type="submit" class="btn">Submit Query</button>
-    </form>
+      <div class="services">
+        <div class="service-card">
+          <h3>Short Structured Consultation</h3>
+          <p>Direct answers. No fluff.</p>
+        </div>
+
+        <div class="service-card">
+          <h3>Marriage & Compatibility</h3>
+          <p>Timing + Karmic factors.</p>
+        </div>
+
+        <div class="service-card">
+          <h3>Karmic Debt Analysis</h3>
+          <p>D30 / D60 deep decoding.</p>
+        </div>
+
+        <div class="service-card">
+          <h3>Advanced Premium Analysis</h3>
+          <p>Full structured breakdown.</p>
+        </div>
+      </div>
+
+      <form id="consultForm" class="form">
+        <input type="text" id="fullName" placeholder="Full Name" required />
+        <input type="email" id="email" placeholder="Email Address" required />
+        <textarea id="message" placeholder="Your Query"></textarea>
+        <button type="submit" class="btn">Submit Query</button>
+      </form>
+
+    </div>
   </section>
 
 
   <!-- BOOK SECTION -->
   <section id="book" class="section dark">
-    <h2>Kaalprehari – The Dera Massacre</h2>
+    <div class="container">
 
-    <img src="kaalprehari.jpg" alt="Kaalprehari Book Cover" class="book-image"/>
+      <h2>Kaalprehari – The Dera Massacre</h2>
 
-    <p class="tagline">
-      Full Ebook Coming Soon... <br>
-      World Wide Release on KDP & Other Platforms
-    </p>
+      <img src="kaalprehari.jpg"
+           alt="Kaalprehari Book Cover"
+           class="book-cover"
+           id="bookImage" />
 
-    <p>
-      Book Your Copies – Early Access <br>
-      Ebook will be directly sent to your email.
-    </p>
+      <p class="book-desc">
+        Supernatural Commercial Thriller <br>
+        Early Booking Open • Ebook ₹99 <br>
+        Worldwide Release on KDP & Other Platforms
+      </p>
 
-    <form id="bookForm" class="form">
-      <input type="text" id="bookName" placeholder="Full Name" required />
-      <input type="email" id="bookEmail" placeholder="Email Address" required />
+      <form id="bookForm" class="form">
+        <input type="text" id="bookName" placeholder="Full Name" required />
+        <input type="email" id="bookEmail" placeholder="Email Address" required />
 
-      <select id="interestedIn" required>
-        <option value="">Interested In</option>
-        <option value="ebook">Ebook</option>
-        <option value="paperback">Paperback</option>
-        <option value="hardcover">Hardcover</option>
-      </select>
+        <select id="interestedIn" required>
+          <option value="">Interested In</option>
+          <option value="ebook">Ebook</option>
+          <option value="paperback">Paperback</option>
+          <option value="hardcover">Hardcover</option>
+        </select>
 
-      <button type="submit" class="btn">I'm Interested</button>
-    </form>
+        <button type="submit" class="btn">Book Early Access</button>
+      </form>
+
+    </div>
   </section>
 
 
   <!-- FOOTER -->
   <footer>
-    <p>© LagneshMitra & Zonies Hub Originals</p>
+    © LagneshMitra & Zonies Hub Originals
   </footer>
 
 
-  <!-- FIREBASE -->
+
+  <!-- FIREBASE MODULE -->
   <script type="module">
+
     import { db } from "./firebase-config.js";
     import {
       collection,
       addDoc,
       serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-    /* --------------------------
+    /* ==========================
        VISIT TRACKING
-    --------------------------- */
+    ========================== */
+
     async function trackVisit() {
       try {
         await addDoc(collection(db, "lm_visits"), {
@@ -106,12 +144,33 @@
         console.error("Visit tracking failed:", error);
       }
     }
+
     trackVisit();
 
 
-    /* --------------------------
+
+    /* ==========================
+       BOOK VIEW TRACKING
+    ========================== */
+
+    const bookImage = document.getElementById("bookImage");
+
+    bookImage.addEventListener("click", async () => {
+      try {
+        await addDoc(collection(db, "lm_book_views"), {
+          createdAt: serverTimestamp()
+        });
+      } catch (error) {
+        console.error("Book view tracking failed:", error);
+      }
+    });
+
+
+
+    /* ==========================
        CONSULTATION FORM
-    --------------------------- */
+    ========================== */
+
     const consultForm = document.getElementById("consultForm");
 
     consultForm.addEventListener("submit", async (e) => {
@@ -140,9 +199,11 @@
     });
 
 
-    /* --------------------------
+
+    /* ==========================
        BOOK INTEREST FORM
-    --------------------------- */
+    ========================== */
+
     const bookForm = document.getElementById("bookForm");
 
     bookForm.addEventListener("submit", async (e) => {
