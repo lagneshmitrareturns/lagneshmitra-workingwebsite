@@ -9,7 +9,7 @@ import {
   collection,
   addDoc,
   serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 
 // =====================================================
@@ -23,7 +23,7 @@ async function trackVisit() {
       source: document.referrer || "direct",
       createdAt: serverTimestamp()
     });
-    console.log("Visit tracked");
+    console.log("Visit tracked ✅");
   } catch (error) {
     console.error("Visit tracking error:", error);
   }
@@ -41,9 +41,14 @@ if (consultForm) {
   consultForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const fullName = document.getElementById("fullName").value;
-    const email = document.getElementById("email").value;
-    const message = document.getElementById("message").value;
+    const fullName = document.getElementById("fullName").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const message = document.getElementById("message").value.trim();
+
+    if (!fullName || !email) {
+      alert("Please fill required fields.");
+      return;
+    }
 
     try {
       await addDoc(collection(db, "lm_queries"), {
@@ -57,6 +62,7 @@ if (consultForm) {
 
       alert("Query Submitted Successfully 🔥");
       consultForm.reset();
+
     } catch (error) {
       console.error("Consultation Error:", error);
       alert("Something went wrong.");
@@ -74,12 +80,12 @@ if (bookForm) {
   bookForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const fullName = document.getElementById("bookName").value;
-    const email = document.getElementById("bookEmail").value;
+    const fullName = document.getElementById("bookName").value.trim();
+    const email = document.getElementById("bookEmail").value.trim();
     const interestedIn = document.getElementById("interestedIn").value;
 
-    if (!interestedIn) {
-      alert("Please select your interest type.");
+    if (!fullName || !email || !interestedIn) {
+      alert("Please fill all fields.");
       return;
     }
 
@@ -95,6 +101,7 @@ if (bookForm) {
 
       alert("Early Access Registered 🔥");
       bookForm.reset();
+
     } catch (error) {
       console.error("Book Interest Error:", error);
       alert("Something went wrong.");
@@ -104,7 +111,7 @@ if (bookForm) {
 
 
 // =====================================================
-// 📌 4. PAYMENT ENTRY (Optional Future Use)
+// 📌 4. PAYMENT ENTRY (Future Use)
 // =====================================================
 const paymentForm = document.getElementById("paymentForm");
 
@@ -133,6 +140,7 @@ if (paymentForm) {
 
       alert("Payment submitted. Verification pending.");
       paymentForm.reset();
+
     } catch (error) {
       console.error("Payment Error:", error);
     }
