@@ -78,12 +78,24 @@ async function loadBookInterest() {
 
 
 // ===============================
-// LOAD VISITS COUNTER
+// LOAD VISITS + BOOK VIEW COUNTERS
 // ===============================
 async function loadCounters() {
   try {
+
+    // Total Website Visits
     const visitsSnapshot = await getDocs(collection(db, "lm_visits"));
-    document.getElementById("totalVisits").innerText = visitsSnapshot.size;
+    const totalVisitsEl = document.getElementById("totalVisits");
+    if (totalVisitsEl) {
+      totalVisitsEl.innerText = visitsSnapshot.size;
+    }
+
+    // Kaalprehari Book Views
+    const bookViewsSnapshot = await getDocs(collection(db, "lm_book_views"));
+    const bookViewsEl = document.getElementById("bookViews");
+    if (bookViewsEl) {
+      bookViewsEl.innerText = bookViewsSnapshot.size;
+    }
 
   } catch (error) {
     console.error("Counter load error:", error);
