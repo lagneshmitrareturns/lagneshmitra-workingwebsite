@@ -68,7 +68,7 @@ header {
   border-radius: 4px;
   text-decoration: none;
   transition: 0.3s ease;
-  margin: 8px;   /* FIXED GAP */
+  margin: 8px;
 }
 
 .btn:hover {
@@ -133,6 +133,7 @@ header {
   border-radius: 6px;
   box-shadow: 0 0 25px rgba(255, 215, 0, 0.25);
   transition: 0.3s ease;
+  cursor: pointer;
 }
 
 .book-cover:hover {
@@ -150,6 +151,66 @@ header {
   color: #ccc;
   margin-bottom: 25px;
   line-height: 1.8;
+}
+
+/* ===== BOOK SIDE PANEL (NEW FEATURE) ===== */
+
+.book-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 25px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.book-detail-panel {
+  width: 260px;
+  background: #14141a;
+  padding: 20px;
+  border-radius: 6px;
+  border: 1px solid #1f1f25;
+  display: none;
+  animation: slideIn 0.3s ease forwards;
+}
+
+.book-detail-panel h3 {
+  color: gold;
+  margin-bottom: 10px;
+}
+
+.book-detail-panel p {
+  font-size: 13px;
+  color: #ccc;
+  margin-bottom: 10px;
+}
+
+.book-detail-panel input {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 10px;
+  background: #111;
+  border: 1px solid #333;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.book-detail-panel input:focus {
+  border-color: gold;
+  outline: none;
+  box-shadow: 0 0 8px rgba(255,215,0,0.2);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* ===== FORM ===== */
@@ -224,5 +285,14 @@ footer {
     display: block;
     margin: 12px auto;
     width: 80%;
+  }
+
+  .book-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .book-detail-panel {
+    width: 90%;
   }
 }
