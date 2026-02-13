@@ -1,21 +1,14 @@
-// ===== FIREBASE IMPORTS =====
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp } 
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+// ===============================
+// 🔥 IMPORT FIREBASE DB
+// ===============================
+import { db } from "./firebase-config.js";
 
-// ===== FIREBASE CONFIG =====
-// 🔥 Replace with your actual config
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_BUCKET",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
+import {
+  collection,
+  addDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
 // =====================================================
 // 📌 1. WEBSITE VISIT TRACKER
@@ -28,53 +21,52 @@ async function trackVisit() {
       source: document.referrer || "direct",
       createdAt: serverTimestamp()
     });
+    console.log("Visit tracked");
   } catch (error) {
     console.error("Visit tracking error:", error);
   }
 }
+
 trackVisit();
 
-// =====================================================
-// 📌 2. QUERY FORM SUBMISSION
-// =====================================================
-const queryForm = document.getElementById("queryForm");
 
-if (queryForm) {
-  queryForm.addEventListener("submit", async (e) => {
+// =====================================================
+// 📌 2. CONSULTATION FORM
+// =====================================================
+const consultForm = document.getElementById("consultForm");
+
+if (consultForm) {
+  consultForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const fullName = document.getElementById("fullName").value;
     const email = document.getElementById("email").value;
-    const phone = document.getElementById("phone").value;
-    const queryType = document.getElementById("queryType").value;
     const message = document.getElementById("message").value;
 
     try {
       await addDoc(collection(db, "lm_queries"), {
         fullName,
         email,
-        phone,
-        queryType,
         message,
         status: "new",
         source: "website",
-        paymentStatus: "pending",
         createdAt: serverTimestamp()
       });
 
-      alert("Query submitted successfully 🔥");
-      queryForm.reset();
+      alert("Query Submitted Successfully 🔥");
+      consultForm.reset();
     } catch (error) {
-      console.error("Query Error:", error);
+      console.error("Consultation Error:", error);
       alert("Something went wrong.");
     }
   });
 }
 
+
 // =====================================================
 // 📌 3. BOOK EARLY ACCESS FORM
 // =====================================================
-const bookForm = document.getElementById("bookInterestForm");
+const bookForm = document.getElementById("bookForm");
 
 if (bookForm) {
   bookForm.addEventListener("submit", async (e) => {
@@ -82,30 +74,35 @@ if (bookForm) {
 
     const fullName = document.getElementById("bookName").value;
     const email = document.getElementById("bookEmail").value;
-    const country = document.getElementById("country").value;
     const interestedIn = document.getElementById("interestedIn").value;
+
+    if (!interestedIn) {
+      alert("Please select your interest type.");
+      return;
+    }
 
     try {
       await addDoc(collection(db, "lm_book_interest"), {
         fullName,
         email,
-        country,
         interestedIn,
         earlyAccessConsent: true,
         notified: false,
         createdAt: serverTimestamp()
       });
 
-      alert("Early access registered 🔥");
+      alert("Early Access Registered 🔥");
       bookForm.reset();
     } catch (error) {
-      console.error("Book interest error:", error);
+      console.error("Book Interest Error:", error);
+      alert("Something went wrong.");
     }
   });
 }
 
+
 // =====================================================
-// 📌 4. PAYMENT ENTRY (Manual UPI Submit)
+// 📌 4. PAYMENT ENTRY (Optional Future Use)
 // =====================================================
 const paymentForm = document.getElementById("paymentForm");
 
@@ -135,7 +132,7 @@ if (paymentForm) {
       alert("Payment submitted. Verification pending.");
       paymentForm.reset();
     } catch (error) {
-      console.error("Payment error:", error);
+      console.error("Payment Error:", error);
     }
   });
 }
