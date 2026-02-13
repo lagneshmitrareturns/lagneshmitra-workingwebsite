@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LagneshMitra Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="firebase-config.js"></script>
+  <script defer src="admin.js"></script>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <div class="logo">LagneshMitra Admin Control</div>
+      <div class="tagline">Private Dashboard — Do Not Share</div>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="container">
+
+      <h2>📩 Consultation Queries</h2>
+      <div id="consultationList"></div>
+
+      <h2 style="margin-top:60px;">📚 Book Interest (Kaalprehari)</h2>
+      <div id="bookInterestList"></div>
+
+      <h2 style="margin-top:60px;">📊 Website Counters</h2>
+      <div id="counterSection">
+        <p>Total Visits: <span id="totalVisits">0</span></p>
+        <p>Kaalprehari Views: <span id="bookViews">0</span></p>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    Admin Panel | LagneshMitra & Zonies Hub Originals
+  </footer>
+
+</body>
+</html>
