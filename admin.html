@@ -24,19 +24,33 @@
 
       <!-- CONSULTATIONS -->
       <h2>📩 Consultation Queries</h2>
-      <div id="consultationList"></div>
+      <div id="consultationList" class="admin-box">
+        Loading...
+      </div>
 
 
       <!-- BOOK INTEREST -->
       <h2 style="margin-top:50px;">📚 Book Interest (Kaalprehari)</h2>
-      <div id="bookInterestList"></div>
+      <div id="bookInterestList" class="admin-box">
+        Loading...
+      </div>
 
 
       <!-- COUNTERS -->
       <h2 style="margin-top:50px;">📊 Website Counters</h2>
-      <div id="counterSection">
-        <p>Total Visits: <span id="totalVisits">0</span></p>
-        <p>Kaalprehari Views: <span id="bookViews">0</span></p>
+
+      <div id="counterSection" class="admin-box">
+
+        <div class="counter-row">
+          <strong>Total Visits:</strong>
+          <span id="totalVisits">0</span>
+        </div>
+
+        <div class="counter-row" style="margin-top:10px;">
+          <strong>Kaalprehari Views:</strong>
+          <span id="bookViews">0</span>
+        </div>
+
       </div>
 
     </div>
@@ -49,8 +63,8 @@
   </footer>
 
 
-  <!-- 🔥 IMPORTANT: ONLY THIS SCRIPT -->
-  <script type="module" src="admin.js"></script>
+  <!-- 🔥 IMPORTANT: LOAD ADMIN JS AS MODULE -->
+  <script type="module" src="./admin.js"></script>
 
 </body>
 </html>
