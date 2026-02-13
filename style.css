@@ -27,7 +27,7 @@ header {
 }
 
 .logo {
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 700;
   color: gold;
   letter-spacing: 1px;
@@ -41,20 +41,21 @@ header {
 
 /* ===== HERO SECTION ===== */
 .hero {
-  padding: 80px 0;
+  padding: 90px 0;
   text-align: center;
 }
 
 .hero h1 {
-  font-size: 38px;
+  font-size: 42px;
   margin-bottom: 20px;
   color: gold;
+  letter-spacing: 1px;
 }
 
 .hero p {
   font-size: 18px;
   color: #ccc;
-  margin-bottom: 30px;
+  margin-bottom: 35px;
 }
 
 /* ===== BUTTONS ===== */
@@ -67,34 +68,37 @@ header {
   border-radius: 4px;
   text-decoration: none;
   transition: 0.3s ease;
+  margin: 8px;   /* FIXED GAP */
 }
 
 .btn:hover {
   background: #d4af37;
+  transform: translateY(-2px);
 }
 
 /* ===== SECTION ===== */
 .section {
-  padding: 60px 0;
+  padding: 70px 0;
 }
 
 .section h2 {
   text-align: center;
-  margin-bottom: 40px;
-  font-size: 28px;
+  margin-bottom: 45px;
+  font-size: 30px;
   color: gold;
+  letter-spacing: 0.5px;
 }
 
 /* ===== SERVICES ===== */
 .services {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
+  gap: 25px;
 }
 
 .service-card {
   background: #14141a;
-  padding: 25px;
+  padding: 28px;
   border-radius: 6px;
   border: 1px solid #1f1f25;
   transition: 0.3s ease;
@@ -102,11 +106,12 @@ header {
 
 .service-card:hover {
   border-color: gold;
-  transform: translateY(-5px);
+  transform: translateY(-6px);
+  box-shadow: 0 0 18px rgba(255, 215, 0, 0.15);
 }
 
 .service-card h3 {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   color: gold;
 }
 
@@ -118,42 +123,51 @@ header {
 /* ===== BOOK SECTION ===== */
 .book-section {
   text-align: center;
+  padding-top: 30px;
 }
 
 .book-cover {
   width: 260px;
   max-width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   border-radius: 6px;
-  box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.25);
+  transition: 0.3s ease;
+}
+
+.book-cover:hover {
+  transform: scale(1.05);
 }
 
 .book-title {
-  font-size: 22px;
+  font-size: 24px;
   color: gold;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .book-desc {
   font-size: 14px;
   color: #ccc;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  line-height: 1.8;
 }
 
 /* ===== FORM ===== */
 form {
   max-width: 500px;
-  margin: 20px auto;
+  margin: 30px auto;
 }
 
 input, textarea, select {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
+  padding: 14px;
+  margin-bottom: 18px;
   border: 1px solid #333;
   background: #111;
   color: white;
   border-radius: 4px;
+  font-size: 14px;
+  transition: 0.3s ease;
 }
 
 input:focus,
@@ -161,6 +175,7 @@ textarea:focus,
 select:focus {
   border-color: gold;
   outline: none;
+  box-shadow: 0 0 8px rgba(255,215,0,0.2);
 }
 
 button {
@@ -170,18 +185,20 @@ button {
   cursor: pointer;
   font-weight: 600;
   border-radius: 4px;
+  transition: 0.3s ease;
 }
 
 button:hover {
   background: #d4af37;
+  transform: translateY(-2px);
 }
 
 /* ===== FOOTER ===== */
 footer {
-  padding: 30px 0;
+  padding: 35px 0;
   text-align: center;
   border-top: 1px solid #222;
-  margin-top: 60px;
+  margin-top: 70px;
   font-size: 14px;
   color: #777;
 }
@@ -190,16 +207,22 @@ footer {
 .counter {
   font-size: 14px;
   color: #aaa;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .hero h1 {
-    font-size: 28px;
+    font-size: 30px;
   }
 
   .hero p {
     font-size: 16px;
+  }
+
+  .btn {
+    display: block;
+    margin: 12px auto;
+    width: 80%;
   }
 }
