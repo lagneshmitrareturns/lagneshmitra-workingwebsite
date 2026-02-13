@@ -33,6 +33,28 @@ trackVisit();
 
 
 // =====================================================
+// 📌 1.5 BOOK IMAGE VIEW TRACKER 🔥 (NEW)
+// =====================================================
+const bookImage = document.getElementById("bookImage");
+
+if (bookImage) {
+  bookImage.addEventListener("click", async () => {
+    try {
+      await addDoc(collection(db, "lm_book_views"), {
+        page: "kaalprehari",
+        createdAt: serverTimestamp()
+      });
+
+      console.log("Book view tracked 🔥");
+
+    } catch (error) {
+      console.error("Book view tracking error:", error);
+    }
+  });
+}
+
+
+// =====================================================
 // 📌 2. CONSULTATION FORM
 // =====================================================
 const consultForm = document.getElementById("consultForm");
