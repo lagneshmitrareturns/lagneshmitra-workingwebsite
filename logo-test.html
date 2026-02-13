@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LM Writing Animation</title>
+<title>LM Writing Test</title>
 
-<!-- Cursive Font -->
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
 
 <style>
@@ -18,42 +16,70 @@ body{
   height:100vh;
   flex-direction:column;
   overflow:hidden;
+  text-align:center;
+}
+
+.logo-container{
+  display:inline-block;
 }
 
 .logo-text{
   font-family:'Great Vibes', cursive;
-  font-size:70px;
+  font-size: clamp(40px, 8vw, 80px);
   color:#000;
-  position:relative;
+  white-space:nowrap;
+  overflow:hidden;
+  border-right:2px solid black;
+  width:0;
+  animation: typing 3s steps(20,end) forwards,
+             blink .7s infinite;
+}
+
+@keyframes typing{
+  to{ width:100%; }
+}
+
+@keyframes blink{
+  50%{ border-color:transparent; }
 }
 
 .underline{
-  width:0;
   height:3px;
   background:black;
-  margin-top:10px;
+  width:0;
+  margin:10px auto;
   animation: underlineDraw 2s ease forwards;
-  animation-delay:3.5s;
+  animation-delay:3s;
 }
 
 @keyframes underlineDraw{
-  to{ width:400px; }
+  to{ width:80%; }
 }
 
 .tagline{
-  margin-top:20px;
-  font-size:16px;
+  margin-top:15px;
+  font-size:14px;
   opacity:0;
-  letter-spacing:1px;
-  animation:fadeIn 1s ease forwards;
+  animation: fadeIn 1s ease forwards;
   animation-delay:5s;
 }
 
 @keyframes fadeIn{
   to{ opacity:1; }
 }
+</style>
+</head>
 
-/* TYPEWRITER EFFECT */
-.typewriter{
-  overflow:hidden;
-  border-right:2px solid black;
+<body>
+
+<div class="logo-container">
+  <div class="logo-text">LagneshMitra</div>
+  <div class="underline"></div>
+</div>
+
+<div class="tagline">
+Astrology • Next-Gen Publishing Studio
+</div>
+
+</body>
+</html>
