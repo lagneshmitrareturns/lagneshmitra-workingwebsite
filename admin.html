@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LagneshMitra Admin Panel</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
+  <!-- HEADER -->
   <header>
     <div class="container">
       <div class="logo">LagneshMitra Admin Control</div>
@@ -15,16 +17,23 @@
     </div>
   </header>
 
+
+  <!-- MAIN SECTION -->
   <section class="section">
     <div class="container">
 
+      <!-- CONSULTATIONS -->
       <h2>📩 Consultation Queries</h2>
       <div id="consultationList"></div>
 
-      <h2 style="margin-top:60px;">📚 Book Interest (Kaalprehari)</h2>
+
+      <!-- BOOK INTEREST -->
+      <h2 style="margin-top:50px;">📚 Book Interest (Kaalprehari)</h2>
       <div id="bookInterestList"></div>
 
-      <h2 style="margin-top:60px;">📊 Website Counters</h2>
+
+      <!-- COUNTERS -->
+      <h2 style="margin-top:50px;">📊 Website Counters</h2>
       <div id="counterSection">
         <p>Total Visits: <span id="totalVisits">0</span></p>
         <p>Kaalprehari Views: <span id="bookViews">0</span></p>
@@ -33,74 +42,15 @@
     </div>
   </section>
 
+
+  <!-- FOOTER -->
   <footer>
     Admin Panel | LagneshMitra & Zonies Hub Originals
   </footer>
 
-  <!-- FIREBASE MODULE -->
-  <script type="module">
-    import { db } from "./firebase-config.js";
-    import {
-      collection,
-      getDocs
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-
-    // ===== LOAD CONSULTATION QUERIES =====
-    async function loadConsultations() {
-      const querySnapshot = await getDocs(collection(db, "lm_queries"));
-      const list = document.getElementById("consultationList");
-      list.innerHTML = "";
-
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        list.innerHTML += `
-          <div class="service-card">
-            <h3>${data.fullName}</h3>
-            <p>Email: ${data.email}</p>
-            <p>Message: ${data.message || "—"}</p>
-            <p>Status: ${data.status}</p>
-          </div>
-        `;
-      });
-    }
-
-
-    // ===== LOAD BOOK INTEREST =====
-    async function loadBookInterest() {
-      const querySnapshot = await getDocs(collection(db, "lm_book_interest"));
-      const list = document.getElementById("bookInterestList");
-      list.innerHTML = "";
-
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        list.innerHTML += `
-          <div class="service-card">
-            <h3>${data.fullName}</h3>
-            <p>Email: ${data.email}</p>
-            <p>Interested In: ${data.interestedIn}</p>
-          </div>
-        `;
-      });
-    }
-
-
-    // ===== LOAD COUNTERS =====
-    async function loadCounters() {
-      const visitSnapshot = await getDocs(collection(db, "lm_visits"));
-      document.getElementById("totalVisits").innerText = visitSnapshot.size;
-
-      const bookSnapshot = await getDocs(collection(db, "lm_book_views"));
-      document.getElementById("bookViews").innerText = bookSnapshot.size;
-    }
-
-
-    // ===== INITIAL LOAD =====
-    loadConsultations();
-    loadBookInterest();
-    loadCounters();
-
-  </script>
+  <!-- 🔥 IMPORTANT: ONLY THIS SCRIPT -->
+  <script type="module" src="admin.js"></script>
 
 </body>
 </html>
