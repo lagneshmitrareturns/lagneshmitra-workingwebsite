@@ -85,10 +85,29 @@
 
       <h2>Kaalprehari – The Dera Massacre</h2>
 
-      <img src="Kaalprehari.jpg"
-           alt="Kaalprehari Book Cover"
-           class="book-cover"
-           id="bookImage" />
+      <!-- NEW WRAPPER -->
+      <div class="book-wrapper">
+
+        <!-- BOOK IMAGE -->
+        <img src="Kaalprehari.jpg"
+             alt="Kaalprehari Book Cover"
+             class="book-cover"
+             id="bookImage" />
+
+        <!-- SIDE DETAIL PANEL (Hidden initially) -->
+        <div class="book-detail-panel" id="bookPanel">
+          <h3>Releasing Worldwide</h3>
+          <p><strong>First in Hindi Language</strong></p>
+          <p>Commercial Supernatural Thriller</p>
+          <p>Ebook Early Price ₹99</p>
+
+          <input type="text" placeholder="Your Name" />
+          <input type="email" placeholder="Your Email" />
+
+          <button class="btn">Notify Me</button>
+        </div>
+
+      </div>
 
       <p class="book-desc">
         Supernatural Commercial Thriller <br>
@@ -127,7 +146,19 @@
   <!-- MAIN FIREBASE LOGIC -->
   <script type="module" src="./main.js"></script>
 
+  <!-- PANEL TOGGLE SCRIPT -->
   <script>
+    const bookImage = document.getElementById("bookImage");
+    const bookPanel = document.getElementById("bookPanel");
+
+    bookImage.addEventListener("click", () => {
+      if (bookPanel.style.display === "block") {
+        bookPanel.style.display = "none";
+      } else {
+        bookPanel.style.display = "block";
+      }
+    });
+
     console.log("INDEX LOADED ✅");
   </script>
 
