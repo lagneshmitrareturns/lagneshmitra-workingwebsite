@@ -3,125 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LM Logo Animation Test</title>
+<title>LM Writing Animation</title>
+
+<!-- Cursive Font -->
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
 
 <style>
-body {
-  margin: 0;
-  background: #ffffff;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  flex-direction: column;
-  font-family: sans-serif;
+body{
+  margin:0;
+  background:#ffffff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  flex-direction:column;
+  overflow:hidden;
 }
 
-.logo-wrapper {
-  text-align: center;
+.logo-text{
+  font-family:'Great Vibes', cursive;
+  font-size:70px;
+  color:#000;
+  position:relative;
 }
 
-svg {
-  width: 600px;
-  max-width: 90%;
+.underline{
+  width:0;
+  height:3px;
+  background:black;
+  margin-top:10px;
+  animation: underlineDraw 2s ease forwards;
+  animation-delay:3.5s;
 }
 
-path {
-  fill: none;
-  stroke: #000;
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 2000;
-  stroke-dashoffset: 2000;
-  animation: draw 4s ease forwards;
+@keyframes underlineDraw{
+  to{ width:400px; }
 }
 
-@keyframes draw {
-  to {
-    stroke-dashoffset: 0;
-  }
+.tagline{
+  margin-top:20px;
+  font-size:16px;
+  opacity:0;
+  letter-spacing:1px;
+  animation:fadeIn 1s ease forwards;
+  animation-delay:5s;
 }
 
-.tagline {
-  margin-top: 20px;
-  font-size: 18px;
-  opacity: 0;
-  letter-spacing: 1px;
-  animation: fadeIn 1s ease forwards;
-  animation-delay: 4s;
+@keyframes fadeIn{
+  to{ opacity:1; }
 }
 
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
-}
-
-/* GOLD PARTICLES */
-.particle {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background: gold;
-  border-radius: 50%;
-  pointer-events: none;
-  animation: burst 1.2s ease-out forwards;
-}
-
-@keyframes burst {
-  to {
-    transform: translate(var(--x), var(--y));
-    opacity: 0;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<div class="logo-wrapper">
-
-<svg viewBox="0 0 1000 300">
-  <path id="lmPath"
-  d="M50 150 
-     Q150 50 250 150 
-     T450 150 
-     Q550 50 650 150 
-     T850 150" />
-</svg>
-
-<div class="tagline">
-Astrology • Next-Gen Publishing Studio
-</div>
-
-</div>
-
-<script>
-
-// PARTICLE BURST AFTER DRAW
-setTimeout(() => {
-  for(let i = 0; i < 40; i++) {
-    const p = document.createElement("div");
-    p.classList.add("particle");
-
-    p.style.left = (window.innerWidth / 2) + "px";
-    p.style.top = (window.innerHeight / 2) + "px";
-
-    const x = (Math.random() - 0.5) * 300 + "px";
-    const y = (Math.random() - 0.5) * 200 + "px";
-
-    p.style.setProperty("--x", x);
-    p.style.setProperty("--y", y);
-
-    document.body.appendChild(p);
-
-    setTimeout(() => p.remove(), 1200);
-  }
-}, 4000);
-
-</script>
-
-</body>
-</html>
+/* TYPEWRITER EFFECT */
+.typewriter{
+  overflow:hidden;
+  border-right:2px solid black;
