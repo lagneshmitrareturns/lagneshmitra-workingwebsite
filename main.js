@@ -38,17 +38,31 @@ provider.addScope("profile");
 provider.setCustomParameters({ prompt: "select_account" });
 
 
-// ========================================
-// 🔥 CONNECT GOOGLE LOGIN BUTTON
-// ========================================
-const gBtn = document.querySelector(".g-btn");
+// =======================================================
+// ⭐⭐⭐ MOST IMPORTANT FIX — BUTTON AFTER DOM LOAD ⭐⭐⭐
+// =======================================================
+window.addEventListener("DOMContentLoaded", () => {
 
-if (gBtn) {
+  const gBtn = document.getElementById("googleLoginBtn");
+
+  if (!gBtn) {
+    console.log("Google button not found on this page");
+    return;
+  }
+
+  console.log("Google button connected ✅");
+
   gBtn.addEventListener("click", async () => {
-    console.log("Redirecting to Google...");
-    await signInWithRedirect(auth, provider);
+    try {
+      console.log("Redirecting to Google...");
+      await signInWithRedirect(auth, provider);
+    } catch (error) {
+      console.error("Google Login Error:", error);
+      alert("Google Login Failed ❌");
+    }
   });
-}
+
+});
 
 
 // ========================================
@@ -57,13 +71,11 @@ if (gBtn) {
 getRedirectResult(auth)
   .then(async (result) => {
 
-    // 👉 Runs ONLY when coming back from Google login
     if (!result?.user) return;
 
     const user = result.user;
     console.log("🔥 LOGIN SUCCESS:", user.email);
 
-    // 🔥 Save / update user in Firestore
     await setDoc(doc(db, "lm_users", user.uid), {
       uid: user.uid,
       name: user.displayName,
@@ -74,8 +86,8 @@ getRedirectResult(auth)
 
     console.log("User saved in Firestore ✅");
 
-    // ⭐⭐⭐ FINAL REDIRECT
-    window.location.replace("/ideology.html");
+    // ⭐ FINAL REDIRECT
+    window.location.href = "/ideology.html";
 
   })
   .catch((error) => {
