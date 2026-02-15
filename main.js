@@ -17,14 +17,29 @@ import {
   GoogleAuthProvider,
   signInWithRedirect,
   getRedirectResult,
-  onAuthStateChanged
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 
 // =====================================================
-// 🔥 CREATE GOOGLE PROVIDER
+// 🔥 CREATE GOOGLE PROVIDER (UPDATED FIX)
 // =====================================================
 const provider = new GoogleAuthProvider();
+
+// ⭐ VERY IMPORTANT (fixes login fail)
+provider.addScope("email");
+provider.addScope("profile");
+provider.setCustomParameters({
+  prompt: "select_account"
+});
+
+
+// =====================================================
+// 📌 MAKE LOGIN SESSION PERSIST (MOBILE FIX)
+// =====================================================
+await setPersistence(auth, browserLocalPersistence);
 
 
 // =====================================================
@@ -32,6 +47,7 @@ const provider = new GoogleAuthProvider();
 // =====================================================
 window.signInWithGoogle = async function () {
   try {
+    console.log("Redirecting to Google...");
     await signInWithRedirect(auth, provider);
   } catch (error) {
     console.error("Redirect Error:", error);
@@ -49,7 +65,6 @@ getRedirectResult(auth)
     if (!result) return;
 
     const user = result.user;
-
     console.log("User Logged In:", user.email);
 
     // 🔥 Save user first time
