@@ -1,6 +1,6 @@
-// ==========================================
-// 🔥 FIREBASE CONFIG (CDN MODULE VERSION)
-// ==========================================
+/* ==========================================
+   🔥 FIREBASE CONFIG (DB + AUTH FINAL)
+========================================== */
 
 // Core Firebase
 import { initializeApp } 
@@ -10,9 +10,11 @@ from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 🔐 ADD THIS (Google Login ke liye)
-import { getAuth } 
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+// 🔐 Firebase Auth + Google Provider
+import { 
+  getAuth, 
+  GoogleAuthProvider 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 
 // 🔐 Your Firebase Config
@@ -33,11 +35,14 @@ const app = initializeApp(firebaseConfig);
 // 🔥 Initialize Firestore Database
 const db = getFirestore(app);
 
-// 🔥 Initialize Firebase Auth (Google Login ke liye)
+// 🔥 Initialize Firebase Auth
 const auth = getAuth(app);
 
+// 🔥 Google Login Provider (MOST IMPORTANT)
+const provider = new GoogleAuthProvider();
+
 
 // ==========================================
-// EXPORT SERVICES
+// EXPORT SERVICES (ALL THREE REQUIRED)
 // ==========================================
-export { db, auth };
+export { db, auth, provider };
