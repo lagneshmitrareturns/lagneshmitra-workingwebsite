@@ -28,10 +28,8 @@ const provider = new GoogleAuthProvider();
 
 
 // =====================================================
-// 📌 0. GOOGLE LOGIN SYSTEM (MOBILE SAFE 🔥)
+// 📌 GOOGLE LOGIN BUTTON (GLOBAL)
 // =====================================================
-
-// Button click → redirect to Google
 window.signInWithGoogle = async function () {
   try {
     await signInWithRedirect(auth, provider);
@@ -42,7 +40,9 @@ window.signInWithGoogle = async function () {
 };
 
 
-// After Google redirects back to site
+// =====================================================
+// 📌 HANDLE GOOGLE REDIRECT RETURN (FIRST LOGIN)
+// =====================================================
 getRedirectResult(auth)
   .then(async (result) => {
 
@@ -52,7 +52,7 @@ getRedirectResult(auth)
 
     console.log("User Logged In:", user.email);
 
-    // 🔥 Save user to Firestore
+    // 🔥 Save user first time
     await setDoc(doc(db, "lm_users", user.uid), {
       uid: user.uid,
       name: user.displayName,
@@ -61,30 +61,43 @@ getRedirectResult(auth)
       createdAt: serverTimestamp()
     });
 
-    alert("Login Successful 🚀");
-
-    // Redirect after login
-    window.location.href = "/ideology.html";
+    console.log("User saved in Firestore 🔥");
 
   })
   .catch((error) => {
     console.error("Google Login Error:", error);
-    alert("Google Login Failed ❌");
   });
 
 
-// Detect already logged in users
+// =====================================================
+// 🔥 AUTH STATE REDIRECT ENGINE (MOST IMPORTANT)
+// =====================================================
 onAuthStateChanged(auth, (user) => {
+
+  const currentPage = window.location.pathname;
+
   if (user) {
-    console.log("Already logged in:", user.email);
+    console.log("Session active:", user.email);
+
+    // If user on landing page → send to ideology
+    if (currentPage === "/" || currentPage.includes("index")) {
+      window.location.href = "/ideology.html";
+    }
+
   } else {
     console.log("User not logged in");
+
+    // If user tries protected page → send back home
+    if (currentPage.includes("ideology")) {
+      window.location.href = "/";
+    }
   }
+
 });
 
 
 // =====================================================
-// 📌 1. WEBSITE VISIT TRACKER
+// 📌 WEBSITE VISIT TRACKER (RESTORED)
 // =====================================================
 async function trackVisit() {
   try {
@@ -103,7 +116,7 @@ trackVisit();
 
 
 // =====================================================
-// 📌 2. CONSULTATION FORM
+// 📌 CONSULTATION FORM (RESTORED)
 // =====================================================
 const consultForm = document.getElementById("consultForm");
 
@@ -142,7 +155,7 @@ if (consultForm) {
 
 
 // =====================================================
-// 📌 3. BOOK EARLY ACCESS FORM
+// 📌 BOOK EARLY ACCESS FORM (RESTORED)
 // =====================================================
 const bookForm = document.getElementById("bookForm");
 
