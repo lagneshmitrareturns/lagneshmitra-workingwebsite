@@ -1,0 +1,12 @@
+{
+  "routes": [
+    {
+      "src": "/ideology",
+      "dest": "/ideology.html"
+    },
+    {
+      "src": "/ideology.html",
+      "dest": "/ideology.html"
+    }
+  ]
+}
