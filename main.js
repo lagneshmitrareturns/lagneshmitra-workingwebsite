@@ -39,16 +39,12 @@ await setPersistence(auth, browserLocalPersistence);
 
 
 // =====================================================
-// 🔥 LOGIN BUTTON
+// 🔥 GOOGLE LOGIN BUTTON
 // =====================================================
 window.signInWithGoogle = async function () {
   try {
-    // ⭐ login intent flag (MOST IMPORTANT FIX)
-    sessionStorage.setItem("loginRedirect", "true");
-
     console.log("Redirecting to Google...");
     await signInWithRedirect(auth, provider);
-
   } catch (error) {
     console.error("Redirect Error:", error);
     alert("Google Login Failed ❌");
@@ -57,11 +53,10 @@ window.signInWithGoogle = async function () {
 
 
 // =====================================================
-// 🔥 HANDLE REDIRECT RETURN
+// 🔥 HANDLE GOOGLE RETURN (FIRST LOGIN SAVE)
 // =====================================================
 getRedirectResult(auth)
   .then(async (result) => {
-
     if (!result) return;
 
     const user = result.user;
@@ -76,7 +71,6 @@ getRedirectResult(auth)
     });
 
     console.log("User saved in Firestore 🔥");
-
   })
   .catch((error) => {
     console.error("Google Login Error:", error);
@@ -84,37 +78,34 @@ getRedirectResult(auth)
 
 
 // =====================================================
-// 🔥 SMART REDIRECT ENGINE (FINAL VERSION)
+// 🔥 FINAL REDIRECT ENGINE (PERMANENT FIX)
 // =====================================================
 onAuthStateChanged(auth, (user) => {
 
   const currentPage = window.location.pathname;
-  const loginRedirect = sessionStorage.getItem("loginRedirect");
-
   console.log("Auth check on:", currentPage);
 
-  // ================= USER LOGGED IN =================
+  // ⭐ USER LOGGED IN
   if (user) {
-
     console.log("Session active:", user.email);
 
-    // ⭐ ONLY redirect if login just happened
-    if (loginRedirect === "true") {
-      sessionStorage.removeItem("loginRedirect");
-      window.location.href = "/ideology.html";
-      return;
+    // If user on landing page → go to ideology
+    if (
+      currentPage === "/" ||
+      currentPage.includes("index.html") ||
+      currentPage === ""
+    ) {
+      window.location.href = "/ideology";
     }
-
   }
 
-  // ================= USER NOT LOGGED IN =================
+  // ⭐ USER NOT LOGGED IN
   else {
-    console.log("No active session");
+    console.log("User not logged in");
 
     // Protect ideology page
     if (currentPage.includes("ideology")) {
       window.location.href = "/";
-      return;
     }
   }
 
@@ -122,7 +113,7 @@ onAuthStateChanged(auth, (user) => {
 
 
 // =====================================================
-// 📌 VISIT TRACKER
+// 📌 WEBSITE VISIT TRACKER
 // =====================================================
 async function trackVisit() {
   try {
@@ -215,4 +206,4 @@ if (bookForm) {
       alert("Something went wrong.");
     }
   });
-}
+      }
