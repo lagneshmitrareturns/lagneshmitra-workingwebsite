@@ -24,14 +24,7 @@ import {
 
 
 // ========================================
-// 🔥 AUTH PERSISTENCE (CRITICAL)
-// ========================================
-await setPersistence(auth, browserLocalPersistence);
-console.log("Auth persistence ready ✅");
-
-
-// ========================================
-// 🔥 GOOGLE PROVIDER
+// 🔥 GLOBAL PROVIDER (IMPORTANT)
 // ========================================
 const provider = new GoogleAuthProvider();
 provider.addScope("email");
@@ -40,25 +33,52 @@ provider.setCustomParameters({ prompt: "select_account" });
 
 
 // ========================================
-// 🔥 CONNECT GOOGLE BUTTON
+// 🔥 INIT APP (WAIT FOR EVERYTHING)
 // ========================================
-const gBtn = document.querySelector(".g-btn");
+async function initApp() {
 
-if (gBtn) {
-  gBtn.addEventListener("click", async () => {
+  // ⭐ VERY IMPORTANT — persistence must finish first
+  await setPersistence(auth, browserLocalPersistence);
+  console.log("Auth persistence ready ✅");
+
+  connectGoogleButton();
+  handleGoogleReturn();
+  startSessionWatcher();
+  trackVisit();
+}
+
+initApp();
+
+
+// ========================================
+// 🔥 CONNECT GOOGLE BUTTON (SAFE)
+// ========================================
+function connectGoogleButton() {
+
+  const btn = document.querySelector(".g-btn");
+
+  if (!btn) {
+    console.warn("Google button not found (OK on ideology page)");
+    return;
+  }
+
+  btn.addEventListener("click", async () => {
     console.log("Redirecting to Google...");
     await signInWithRedirect(auth, provider);
   });
+
 }
 
 
 // ========================================
-// 💣 GOOGLE RETURN HANDLER (PRIMARY REDIRECT)
+// 💣 HANDLE GOOGLE RETURN (ONLY REDIRECT HERE)
 // ========================================
-getRedirectResult(auth)
-  .then(async (result) => {
+async function handleGoogleReturn() {
 
-    // 👉 Only runs AFTER returning from Google
+  try {
+    const result = await getRedirectResult(auth);
+
+    // 👉 Runs ONLY after returning from Google
     if (!result?.user) return;
 
     const user = result.user;
@@ -75,40 +95,45 @@ getRedirectResult(auth)
 
     console.log("User saved in Firestore ✅");
 
-    // ⭐ FINAL REDIRECT (VERCEL SAFE)
-    console.log("Redirecting to ideology page...");
-    window.location.replace("/ideology.html");
+    // ⭐ FINAL REDIRECT (MOST RELIABLE)
+    window.location.href = "/ideology.html";
 
-  })
-  .catch((error) => {
+  } catch (error) {
     console.error("Google Login Error:", error);
+  }
+
+}
+
+
+// ========================================
+// 🔐 SESSION WATCHER (AUTO REDIRECT)
+// ========================================
+function startSessionWatcher() {
+
+  onAuthStateChanged(auth, (user) => {
+
+    if (!user) return;
+
+    const path = window.location.pathname;
+    console.log("Session active:", user.email);
+
+    // If logged-in user opens landing page manually
+    if (
+      path === "/" ||
+      path.includes("index.html") ||
+      path === ""
+    ) {
+      console.log("Auto redirecting logged-in user...");
+      window.location.href = "/ideology.html";
+    }
+
   });
 
-
-// ========================================
-// 🔐 SESSION CHECK (SECONDARY REDIRECT)
-// ========================================
-onAuthStateChanged(auth, (user) => {
-
-  if (!user) return;
-
-  const path = window.location.pathname;
-  console.log("Session active:", user.email);
-
-  // If logged-in user opens landing page manually
-  if (
-    path === "/" ||
-    path.includes("index.html") ||
-    path === ""
-  ) {
-    console.log("Auto redirecting logged-in user...");
-    window.location.replace("/ideology.html");
-  }
-});
+}
 
 
 // ========================================
-// 📊 WEBSITE VISIT TRACKER
+// 📊 VISIT TRACKER
 // ========================================
 async function trackVisit() {
   try {
@@ -123,7 +148,6 @@ async function trackVisit() {
     console.error("Visit tracking error:", err);
   }
 }
-trackVisit();
 
 
 // ========================================
