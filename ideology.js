@@ -9,6 +9,38 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 
+// =====================================================
+// 🔐 AUTH GUARD (FINAL FIX ⭐)
+// =====================================================
+console.log("Ideology page auth check starting...");
+
+let authChecked = false;
+
+onAuthStateChanged(auth, (user) => {
+
+  // ⏳ Ignore FIRST null state (Firebase loading)
+  if (!authChecked) {
+    authChecked = true;
+    console.log("Firebase auth loading...");
+    return;
+  }
+
+  // ❌ User NOT logged in → go back home
+  if (!user) {
+    console.log("User not logged in → redirect home");
+    window.location.replace("/");
+    return;
+  }
+
+  // ✅ User logged in → allow page + fill profile
+  console.log("User allowed:", user.email);
+
+  userName.innerText = user.displayName;
+  userEmail.innerText = user.email;
+  userPhoto.src = user.photoURL;
+});
+
+
 // ===============================
 // 🔥 IMAGE SLIDESHOW SYSTEM
 // ===============================
@@ -50,29 +82,11 @@ updatePage();
 
 
 // ===============================
-// 🔥 USER PROFILE SYSTEM
-// ===============================
-const userName = document.getElementById("userName");
-const userEmail = document.getElementById("userEmail");
-const userPhoto = document.getElementById("userPhoto");
-const logoutBtn = document.getElementById("logoutBtn");
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    userName.innerText = user.displayName;
-    userEmail.innerText = user.email;
-    userPhoto.src = user.photoURL;
-  } else {
-    // 🔥 Not logged in → send back to home
-    window.location.href = "/";
-  }
-});
-
-
-// ===============================
 // 🔥 LOGOUT BUTTON
 // ===============================
+const logoutBtn = document.getElementById("logoutBtn");
+
 logoutBtn.onclick = async () => {
   await signOut(auth);
-  window.location.href = "/";
+  window.location.replace("/");
 };
