@@ -30,9 +30,8 @@
   <section class="hero">
     <div class="container">
 
-      <!-- 🔥 MINI GOOGLE LOGIN (TOP RIGHT FIXED) -->
+      <!-- 🔥 MINI GOOGLE LOGIN -->
       <div class="google-login-mini">
-        <!-- ⭐ onclick removed → JS will attach event -->
         <button id="googleLoginBtn" class="g-btn">G</button>
         <span class="g-text">Login</span>
       </div>
@@ -43,6 +42,13 @@
       <div class="cta-buttons">
         <a href="#consult" class="btn">Book Consultation</a>
         <a href="#book" class="btn secondary">Kaalprehari – Early Access</a>
+      </div>
+
+      <!-- 🔥 TEMP BYPASS BUTTON -->
+      <div class="bypass-wrap">
+        <a href="/ideology.html" class="btn">
+          Enter Ideology Page →
+        </a>
       </div>
 
     </div>
@@ -141,22 +147,7 @@
     © LagneshMitra & Zonies Hub Originals
   </footer>
 
-
-  <!-- 🔥 MAIN JS -->
   <script type="module" src="./main.js"></script>
-
-  <!-- BOOK PANEL TOGGLE -->
-  <script>
-    const bookImage = document.getElementById("bookImage");
-    const bookPanel = document.getElementById("bookPanel");
-
-    if (bookImage) {
-      bookImage.addEventListener("click", () => {
-        bookPanel.style.display =
-          bookPanel.style.display === "block" ? "none" : "block";
-      });
-    }
-  </script>
 
 </body>
 </html>
