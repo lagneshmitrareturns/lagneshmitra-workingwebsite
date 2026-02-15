@@ -1,57 +1,60 @@
 console.log("MAIN JS LOADED ✅");
 
-import { db, auth, provider } from "./firebase-config.js";
+import { db, auth } from "./firebase-config.js";
+
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  doc,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 import {
   signInWithRedirect,
+  GoogleAuthProvider,
   setPersistence,
   browserLocalPersistence,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-import {
-  doc,
-  setDoc,
-  serverTimestamp,
-  addDoc,
-  collection
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-
-// =======================================
-// 🔐 AUTH PERSISTENCE (MOBILE MUST)
-// =======================================
+// 🔥 Persistence
 await setPersistence(auth, browserLocalPersistence);
 
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({ prompt: "select_account" });
 
-// =======================================
-// 🔥 GOOGLE LOGIN BUTTON
-// =======================================
+
+// =====================================
+// 🔥 GOOGLE BUTTON
+// =====================================
 window.addEventListener("DOMContentLoaded", () => {
-  const gBtn = document.getElementById("googleLoginBtn");
 
-  if (!gBtn) return;
+  const btn = document.getElementById("googleLoginBtn");
+  if (!btn) return;
 
-  gBtn.addEventListener("click", async () => {
+  btn.addEventListener("click", async () => {
     console.log("Redirecting to Google...");
     await signInWithRedirect(auth, provider);
   });
+
 });
 
 
-// =======================================
-// ⭐⭐⭐ REAL LOGIN DETECTOR ⭐⭐⭐
-// =======================================
+// =====================================
+// ⭐ REAL LOGIN DETECTOR (NO REDIRECT)
+// =====================================
 onAuthStateChanged(auth, async (user) => {
 
   if (!user) {
-    console.log("User not logged in");
+    console.log("User NOT logged in");
     return;
   }
 
-  console.log("LOGIN SUCCESS:", user.email);
+  console.log("🔥 USER LOGGED IN:", user.email);
 
-  // 🔥 Save user in Firestore
+  // Save user in Firestore
   await setDoc(doc(db, "lm_users", user.uid), {
     uid: user.uid,
     name: user.displayName,
@@ -60,25 +63,8 @@ onAuthStateChanged(auth, async (user) => {
     createdAt: serverTimestamp()
   });
 
-  // ⭐ Redirect ONLY from homepage
-  const path = window.location.pathname;
+  // 🔥 SHOW LOGIN SUCCESS ON INDEX PAGE
+  const loginText = document.querySelector(".g-text");
+  if (loginText) loginText.innerText = "Logged in ✅";
 
-  if (path === "/" || path.includes("index")) {
-    console.log("Redirecting to ideology...");
-    window.location.replace("/ideology.html");
-  }
 });
-
-
-// =======================================
-// 📊 VISIT TRACKER (Optional)
-// =======================================
-async function trackVisit() {
-  try {
-    await addDoc(collection(db, "lm_visits"), {
-      page: window.location.pathname,
-      createdAt: serverTimestamp()
-    });
-  } catch {}
-}
-trackVisit();
