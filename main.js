@@ -15,25 +15,39 @@ import {
 
 import {
   GoogleAuthProvider,
-  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 
 // =====================================================
-// 🔥 CREATE GOOGLE PROVIDER (THIS WAS MISSING ❌)
+// 🔥 CREATE GOOGLE PROVIDER
 // =====================================================
 const provider = new GoogleAuthProvider();
 
 
 // =====================================================
-// 📌 0. GOOGLE LOGIN SYSTEM 🔥
+// 📌 0. GOOGLE LOGIN SYSTEM (MOBILE SAFE 🔥)
 // =====================================================
 
-// Global function for button
+// Button click → redirect to Google
 window.signInWithGoogle = async function () {
   try {
-    const result = await signInWithPopup(auth, provider);
+    await signInWithRedirect(auth, provider);
+  } catch (error) {
+    console.error("Redirect Error:", error);
+    alert("Google Login Failed ❌");
+  }
+};
+
+
+// After Google redirects back to site
+getRedirectResult(auth)
+  .then(async (result) => {
+
+    if (!result) return;
+
     const user = result.user;
 
     console.log("User Logged In:", user.email);
@@ -52,11 +66,11 @@ window.signInWithGoogle = async function () {
     // Redirect after login
     window.location.href = "/ideology.html";
 
-  } catch (error) {
+  })
+  .catch((error) => {
     console.error("Google Login Error:", error);
     alert("Google Login Failed ❌");
-  }
-};
+  });
 
 
 // Detect already logged in users
