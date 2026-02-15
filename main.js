@@ -1,9 +1,6 @@
 console.log("MAIN JS LOADED ✅");
 
-// ===============================
-// 🔥 IMPORT FIREBASE DB + AUTH + PROVIDER
-// ===============================
-import { db, auth, provider } from "./firebase-config.js";
+import { db, auth } from "./firebase-config.js";
 
 import {
   collection,
@@ -17,56 +14,42 @@ import {
   signInWithRedirect,
   getRedirectResult,
   onAuthStateChanged,
+  GoogleAuthProvider,
   setPersistence,
   browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 
-// =====================================================
-// 🔥 INIT AUTH SYSTEM
-// =====================================================
-async function initAuthSystem() {
-
-  await setPersistence(auth, browserLocalPersistence);
-  console.log("Firebase persistence ready ✅");
-
-  startAuthFlow();
-}
-
-initAuthSystem();
+// ========================================
+// 🔥 INIT AUTH (MOBILE REQUIRED)
+await setPersistence(auth, browserLocalPersistence);
 
 
-// =====================================================
-// 🔥 AUTH FLOW START
-// =====================================================
-function startAuthFlow() {
-
-  // ================= GOOGLE LOGIN BUTTON =================
-  window.signInWithGoogle = async function () {
-    try {
-      console.log("Redirecting to Google...");
-
-      sessionStorage.setItem("afterLoginRedirect", "/ideology.html");
-
-      await signInWithRedirect(auth, provider);
-
-    } catch (error) {
-      console.error("Redirect Error:", error);
-      alert("Google Login Failed ❌");
-    }
-  };
+// ========================================
+// 🔥 GOOGLE PROVIDER
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({ prompt: "select_account" });
 
 
-  // ================= HANDLE GOOGLE RETURN =================
-  getRedirectResult(auth)
-    .then(async (result) => {
+// ========================================
+// 🔥 LOGIN BUTTON
+window.signInWithGoogle = async function () {
+  await signInWithRedirect(auth, provider);
+};
 
-      if (!result) return;
+
+// ========================================
+// 💣 THE REAL FIX — REDIRECT HERE ONLY
+getRedirectResult(auth)
+  .then(async (result) => {
+
+    // 👉 If user just came back from Google
+    if (result?.user) {
 
       const user = result.user;
-      console.log("User Logged In:", user.email);
+      console.log("🔥 LOGIN RETURN SUCCESS:", user.email);
 
-      // Save user first time
+      // save user first time
       await setDoc(doc(db, "lm_users", user.uid), {
         uid: user.uid,
         name: user.displayName,
@@ -75,66 +58,23 @@ function startAuthFlow() {
         createdAt: serverTimestamp()
       });
 
-      console.log("User saved in Firestore 🔥");
-
-    })
-    .catch((error) => {
-      console.error("Google Login Error:", error);
-    });
-
-
-  // =====================================================
-  // 🔥 SESSION + REDIRECT ENGINE
-  // =====================================================
-  let authReady = false;
-
-  onAuthStateChanged(auth, (user) => {
-
-    if (!authReady) {
-      authReady = true;
-      console.log("Firebase auth initialized ⏳");
-      return;
+      // ⭐⭐⭐ REDIRECT ONLY HERE
+      window.location.href = "/ideology.html";
     }
 
-    const currentPage = window.location.pathname;
-    const redirectAfterLogin = sessionStorage.getItem("afterLoginRedirect");
-
-    console.log("Auth checked:", user ? user.email : "No user");
-
-    // USER LOGGED IN
-    if (user) {
-
-      if (redirectAfterLogin) {
-        sessionStorage.removeItem("afterLoginRedirect");
-        window.location.replace("/ideology.html");
-        return;
-      }
-
-      if (
-        currentPage === "/" ||
-        currentPage.includes("index.html") ||
-        currentPage === ""
-      ) {
-        window.location.replace("/ideology.html");
-        return;
-      }
-    }
-
-    // USER NOT LOGGED IN
-    else {
-      if (currentPage.includes("ideology")) {
-        window.location.replace("/");
-      }
-    }
-
-  });
-
-}
+  })
+  .catch((error) => console.error(error));
 
 
-// =====================================================
-// 📌 WEBSITE VISIT TRACKER
-// =====================================================
+// ========================================
+// 🔐 SESSION CHECK (NO REDIRECT HERE)
+onAuthStateChanged(auth, (user) => {
+  console.log("Session:", user ? user.email : "No user");
+});
+
+
+// ========================================
+// 📊 VISIT TRACKER
 async function trackVisit() {
   try {
     await addDoc(collection(db, "lm_visits"), {
@@ -143,87 +83,6 @@ async function trackVisit() {
       source: document.referrer || "direct",
       createdAt: serverTimestamp()
     });
-    console.log("Visit tracked ✅");
-  } catch (error) {
-    console.error("Visit tracking error:", error);
-  }
+  } catch {}
 }
 trackVisit();
-
-
-// =====================================================
-// 📌 CONSULTATION FORM
-// =====================================================
-const consultForm = document.getElementById("consultForm");
-
-if (consultForm) {
-  consultForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const fullName = document.getElementById("fullName").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const message = document.getElementById("message").value.trim();
-
-    if (!fullName || !email) {
-      alert("Please fill required fields.");
-      return;
-    }
-
-    try {
-      await addDoc(collection(db, "lm_queries"), {
-        fullName,
-        email,
-        message,
-        status: "new",
-        source: "website",
-        createdAt: serverTimestamp()
-      });
-
-      alert("Query Submitted Successfully 🔥");
-      consultForm.reset();
-
-    } catch (error) {
-      console.error("Consultation Error:", error);
-      alert("Something went wrong.");
-    }
-  });
-}
-
-
-// =====================================================
-// 📌 BOOK EARLY ACCESS FORM
-// =====================================================
-const bookForm = document.getElementById("bookForm");
-
-if (bookForm) {
-  bookForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const fullName = document.getElementById("bookName").value.trim();
-    const email = document.getElementById("bookEmail").value.trim();
-    const interestedIn = document.getElementById("interestedIn").value;
-
-    if (!fullName || !email || !interestedIn) {
-      alert("Please fill all fields.");
-      return;
-    }
-
-    try {
-      await addDoc(collection(db, "lm_book_interest"), {
-        fullName,
-        email,
-        interestedIn,
-        earlyAccessConsent: true,
-        notified: false,
-        createdAt: serverTimestamp()
-      });
-
-      alert("Early Access Registered 🔥");
-      bookForm.reset();
-
-    } catch (error) {
-      console.error("Book Interest Error:", error);
-      alert("Something went wrong.");
-    }
-  });
-}
