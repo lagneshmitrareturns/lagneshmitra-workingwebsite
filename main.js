@@ -3,7 +3,7 @@ console.log("MAIN JS LOADED ✅");
 // ===============================
 // 🔥 IMPORT FIREBASE DB + AUTH
 // ===============================
-import { db, auth, provider } from "./firebase-config.js";
+import { db, auth } from "./firebase-config.js";
 
 import {
   collection,
@@ -14,16 +14,23 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 import {
+  GoogleAuthProvider,
   signInWithPopup,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 
 // =====================================================
-// 📌 0. GOOGLE LOGIN SYSTEM 🔥🔥🔥
+// 🔥 CREATE GOOGLE PROVIDER (THIS WAS MISSING ❌)
+// =====================================================
+const provider = new GoogleAuthProvider();
+
+
+// =====================================================
+// 📌 0. GOOGLE LOGIN SYSTEM 🔥
 // =====================================================
 
-// Google Login Button Function (global)
+// Global function for button
 window.signInWithGoogle = async function () {
   try {
     const result = await signInWithPopup(auth, provider);
@@ -40,12 +47,14 @@ window.signInWithGoogle = async function () {
       createdAt: serverTimestamp()
     });
 
-    // 🔥 First login redirect → ideology page
+    alert("Login Successful 🚀");
+
+    // Redirect after login
     window.location.href = "/ideology.html";
 
   } catch (error) {
     console.error("Google Login Error:", error);
-    alert("Login failed. Try again.");
+    alert("Google Login Failed ❌");
   }
 };
 
@@ -54,6 +63,8 @@ window.signInWithGoogle = async function () {
 onAuthStateChanged(auth, (user) => {
   if (user) {
     console.log("Already logged in:", user.email);
+  } else {
+    console.log("User not logged in");
   }
 });
 
@@ -75,26 +86,6 @@ async function trackVisit() {
   }
 }
 trackVisit();
-
-
-// =====================================================
-// 📌 1.5 BOOK IMAGE VIEW TRACKER 🔥
-// =====================================================
-const bookImage = document.getElementById("bookImage");
-
-if (bookImage) {
-  bookImage.addEventListener("click", async () => {
-    try {
-      await addDoc(collection(db, "lm_book_views"), {
-        page: "kaalprehari",
-        createdAt: serverTimestamp()
-      });
-      console.log("Book view tracked 🔥");
-    } catch (error) {
-      console.error("Book view tracking error:", error);
-    }
-  });
-}
 
 
 // =====================================================
@@ -170,44 +161,6 @@ if (bookForm) {
     } catch (error) {
       console.error("Book Interest Error:", error);
       alert("Something went wrong.");
-    }
-  });
-}
-
-
-// =====================================================
-// 📌 4. PAYMENT ENTRY (Future Use)
-// =====================================================
-const paymentForm = document.getElementById("paymentForm");
-
-if (paymentForm) {
-  paymentForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const fullName = document.getElementById("payName").value;
-    const email = document.getElementById("payEmail").value;
-    const amount = document.getElementById("amount").value;
-    const transactionId = document.getElementById("transactionId").value;
-    const serviceType = document.getElementById("serviceType").value;
-
-    try {
-      await addDoc(collection(db, "lm_payments"), {
-        fullName,
-        email,
-        amount,
-        transactionId,
-        serviceType,
-        paymentMethod: "UPI",
-        status: "pending",
-        verified: false,
-        createdAt: serverTimestamp()
-      });
-
-      alert("Payment submitted. Verification pending.");
-      paymentForm.reset();
-
-    } catch (error) {
-      console.error("Payment Error:", error);
     }
   });
 }
