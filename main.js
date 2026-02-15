@@ -14,8 +14,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 import {
-  signInWithRedirect,
-  getRedirectResult,
+  signInWithPopup,
   GoogleAuthProvider,
   setPersistence,
   browserLocalPersistence
@@ -39,7 +38,7 @@ provider.setCustomParameters({ prompt: "select_account" });
 
 
 // =======================================================
-// ⭐⭐⭐ MOST IMPORTANT FIX — BUTTON AFTER DOM LOAD ⭐⭐⭐
+// ⭐ GOOGLE LOGIN BUTTON (POPUP FINAL)
 // =======================================================
 window.addEventListener("DOMContentLoaded", () => {
 
@@ -54,8 +53,27 @@ window.addEventListener("DOMContentLoaded", () => {
 
   gBtn.addEventListener("click", async () => {
     try {
-      console.log("Redirecting to Google...");
-      await signInWithRedirect(auth, provider);
+      console.log("Opening Google popup...");
+
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      console.log("🔥 LOGIN SUCCESS:", user.email);
+
+      // Save / update user in Firestore
+      await setDoc(doc(db, "lm_users", user.uid), {
+        uid: user.uid,
+        name: user.displayName,
+        email: user.email,
+        photo: user.photoURL,
+        createdAt: serverTimestamp()
+      });
+
+      console.log("User saved in Firestore ✅");
+
+      // ⭐ FINAL REDIRECT AFTER LOGIN
+      window.location.href = "/ideology.html";
+
     } catch (error) {
       console.error("Google Login Error:", error);
       alert("Google Login Failed ❌");
@@ -63,36 +81,6 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
 });
-
-
-// ========================================
-// 💣 ONLY PLACE WHERE REDIRECT HAPPENS
-// ========================================
-getRedirectResult(auth)
-  .then(async (result) => {
-
-    if (!result?.user) return;
-
-    const user = result.user;
-    console.log("🔥 LOGIN SUCCESS:", user.email);
-
-    await setDoc(doc(db, "lm_users", user.uid), {
-      uid: user.uid,
-      name: user.displayName,
-      email: user.email,
-      photo: user.photoURL,
-      createdAt: serverTimestamp()
-    });
-
-    console.log("User saved in Firestore ✅");
-
-    // ⭐ FINAL REDIRECT
-    window.location.href = "/ideology.html";
-
-  })
-  .catch((error) => {
-    console.error("Google Login Error:", error);
-  });
 
 
 // ========================================
