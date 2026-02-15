@@ -1,56 +1,47 @@
 console.log("MAIN JS LOADED ✅");
 
-import { db, auth } from "./firebase-config.js";
+import { db, auth, provider } from "./firebase-config.js";
 
 import {
-  doc,
-  setDoc,
-  collection,
-  addDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-import {
-  GoogleAuthProvider,
   signInWithRedirect,
   setPersistence,
   browserLocalPersistence,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
+import {
+  doc,
+  setDoc,
+  serverTimestamp,
+  addDoc,
+  collection
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// ========================================
-// 🔥 AUTH PERSISTENCE (VERY IMPORTANT)
-// ========================================
+
+// =======================================
+// 🔐 AUTH PERSISTENCE (MOBILE MUST)
+// =======================================
 await setPersistence(auth, browserLocalPersistence);
 
 
-// ========================================
-// 🔥 GOOGLE PROVIDER
-// ========================================
-const provider = new GoogleAuthProvider();
-provider.setCustomParameters({ prompt: "select_account" });
-
-
-// ========================================
-// 🔥 CONNECT GOOGLE BUTTON (AFTER PAGE LOAD)
-// ========================================
+// =======================================
+// 🔥 GOOGLE LOGIN BUTTON
+// =======================================
 window.addEventListener("DOMContentLoaded", () => {
+  const gBtn = document.getElementById("googleLoginBtn");
 
-  const btn = document.getElementById("googleLoginBtn");
-  if (!btn) return;
+  if (!gBtn) return;
 
-  btn.addEventListener("click", async () => {
+  gBtn.addEventListener("click", async () => {
     console.log("Redirecting to Google...");
     await signInWithRedirect(auth, provider);
   });
-
 });
 
 
-// ========================================
-// ⭐ REAL LOGIN DETECTOR (THE MAGIC)
-// ========================================
+// =======================================
+// ⭐⭐⭐ REAL LOGIN DETECTOR ⭐⭐⭐
+// =======================================
 onAuthStateChanged(auth, async (user) => {
 
   if (!user) {
@@ -58,9 +49,9 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  console.log("User logged in:", user.email);
+  console.log("LOGIN SUCCESS:", user.email);
 
-  // Save / update user in Firestore
+  // 🔥 Save user in Firestore
   await setDoc(doc(db, "lm_users", user.uid), {
     uid: user.uid,
     name: user.displayName,
@@ -69,25 +60,23 @@ onAuthStateChanged(auth, async (user) => {
     createdAt: serverTimestamp()
   });
 
-  // ⭐ REDIRECT IF USER ON LANDING PAGE
+  // ⭐ Redirect ONLY from homepage
   const path = window.location.pathname;
 
   if (path === "/" || path.includes("index")) {
     console.log("Redirecting to ideology...");
-    window.location.href = "/ideology.html";
+    window.location.replace("/ideology.html");
   }
 });
 
 
-// ========================================
-// 📊 VISIT TRACKER (RESTORED)
-// ========================================
+// =======================================
+// 📊 VISIT TRACKER (Optional)
+// =======================================
 async function trackVisit() {
   try {
     await addDoc(collection(db, "lm_visits"), {
       page: window.location.pathname,
-      device: navigator.userAgent,
-      source: document.referrer || "direct",
       createdAt: serverTimestamp()
     });
   } catch {}
