@@ -1,6 +1,10 @@
 {
   "routes": [
     {
+      "src": "/__/auth/(.*)",
+      "dest": "/__/auth/$1"
+    },
+    {
       "src": "/ideology",
       "dest": "/ideology.html"
     },
