@@ -1,27 +1,38 @@
-// 🔥 FIREBASE CONFIG (FINAL CLEAN V2)
+/* ==========================================
+   🔥 FIREBASE CONFIG — FINAL CLEAN VERSION
+========================================== */
 
-import { initializeApp } 
-from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 import { getAuth, GoogleAuthProvider } 
-from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-import { getFirestore } 
-from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
+// ⭐ NEW APP CONFIG (v3)
 const firebaseConfig = {
   apiKey: "AIzaSyDvxM3XH5IOm66i_bZ4PIhwkDGU3Dq5diE",
   authDomain: "lagneshmitra-e57b8.firebaseapp.com",
   projectId: "lagneshmitra-e57b8",
   storageBucket: "lagneshmitra-e57b8.firebasestorage.app",
   messagingSenderId: "420798143606",
-  appId: "1:420798143606:web:87cb00610e2be124415357"
+  appId: "1:420798143606:web:5c61b76b311161f4415357",
+  measurementId: "G-19X0471X54"
 };
 
+
+// 🔥 Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-const auth = getAuth(app);
+// 🔥 Services
 const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
+const auth = getAuth(app);
 
-export { auth, db, provider };
+// ⭐ Google Provider (IMPORTANT)
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({ prompt: "select_account" });
+
+
+// EXPORT EVERYTHING
+export { db, auth, provider };
