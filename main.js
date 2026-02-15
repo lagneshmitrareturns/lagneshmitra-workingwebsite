@@ -1,15 +1,61 @@
 console.log("MAIN JS LOADED ✅");
 
 // ===============================
-// 🔥 IMPORT FIREBASE DB
+// 🔥 IMPORT FIREBASE DB + AUTH
 // ===============================
-import { db } from "./firebase-config.js";
+import { db, auth, provider } from "./firebase-config.js";
 
 import {
   collection,
   addDoc,
-  serverTimestamp
+  serverTimestamp,
+  doc,
+  setDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+import {
+  signInWithPopup,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+
+// =====================================================
+// 📌 0. GOOGLE LOGIN SYSTEM 🔥🔥🔥
+// =====================================================
+
+// Google Login Button Function (global)
+window.signInWithGoogle = async function () {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    console.log("User Logged In:", user.email);
+
+    // 🔥 Save user to Firestore
+    await setDoc(doc(db, "lm_users", user.uid), {
+      uid: user.uid,
+      name: user.displayName,
+      email: user.email,
+      photo: user.photoURL,
+      createdAt: serverTimestamp()
+    });
+
+    // 🔥 First login redirect → ideology page
+    window.location.href = "/ideology.html";
+
+  } catch (error) {
+    console.error("Google Login Error:", error);
+    alert("Login failed. Try again.");
+  }
+};
+
+
+// Detect already logged in users
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log("Already logged in:", user.email);
+  }
+});
 
 
 // =====================================================
@@ -28,12 +74,11 @@ async function trackVisit() {
     console.error("Visit tracking error:", error);
   }
 }
-
 trackVisit();
 
 
 // =====================================================
-// 📌 1.5 BOOK IMAGE VIEW TRACKER 🔥 (NEW)
+// 📌 1.5 BOOK IMAGE VIEW TRACKER 🔥
 // =====================================================
 const bookImage = document.getElementById("bookImage");
 
@@ -44,9 +89,7 @@ if (bookImage) {
         page: "kaalprehari",
         createdAt: serverTimestamp()
       });
-
       console.log("Book view tracked 🔥");
-
     } catch (error) {
       console.error("Book view tracking error:", error);
     }
