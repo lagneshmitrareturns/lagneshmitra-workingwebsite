@@ -2,14 +2,20 @@
 // 🔥 FIREBASE CONFIG (CDN MODULE VERSION)
 // ==========================================
 
+// Core Firebase
 import { initializeApp } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 
+// Firestore DB
 import { getFirestore } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+// 🔐 ADD THIS (Google Login ke liye)
+import { getAuth } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// 🔐 Your REAL Firebase Config
+
+// 🔐 Your Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyCX8yGRJc5AcxSEaaC6AzNLZzxtOCz83Sk",
   authDomain: "lagneshmitra-e57b8.firebaseapp.com",
@@ -21,11 +27,17 @@ const firebaseConfig = {
 };
 
 
-// Initialize Firebase
+// 🔥 Initialize Firebase App
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firestore
+// 🔥 Initialize Firestore Database
 const db = getFirestore(app);
 
-// Export database
-export { db };
+// 🔥 Initialize Firebase Auth (Google Login ke liye)
+const auth = getAuth(app);
+
+
+// ==========================================
+// EXPORT SERVICES
+// ==========================================
+export { db, auth };
