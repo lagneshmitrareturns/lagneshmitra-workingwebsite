@@ -10,14 +10,14 @@ from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 🔐 Firebase Auth + Google Provider
+// Firebase Auth + Google Provider
 import { 
   getAuth, 
   GoogleAuthProvider 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 
-// 🔐 Your Firebase Config
+// 🔐 Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyCX8yGRJc5AcxSEaaC6AzNLZzxtOCz83Sk",
   authDomain: "lagneshmitra-e57b8.firebaseapp.com",
@@ -38,11 +38,23 @@ const db = getFirestore(app);
 // 🔥 Initialize Firebase Auth
 const auth = getAuth(app);
 
-// 🔥 Google Login Provider (MOST IMPORTANT)
+
+// =================================================
+// ⭐ SINGLE GLOBAL GOOGLE PROVIDER (FINAL FIX)
+// =================================================
 const provider = new GoogleAuthProvider();
+
+// ⭐ REQUIRED SCOPES
+provider.addScope("email");
+provider.addScope("profile");
+
+// ⭐ Force account picker every time (mobile fix)
+provider.setCustomParameters({
+  prompt: "select_account"
+});
 
 
 // ==========================================
-// EXPORT SERVICES (ALL THREE REQUIRED)
+// EXPORT SERVICES
 // ==========================================
 export { db, auth, provider };
