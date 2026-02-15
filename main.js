@@ -44,6 +44,7 @@ await setPersistence(auth, browserLocalPersistence);
 window.signInWithGoogle = async function () {
   try {
     console.log("Redirecting to Google...");
+    sessionStorage.setItem("loginRedirect", "true"); // ⭐ intent flag
     await signInWithRedirect(auth, provider);
   } catch (error) {
     console.error("Redirect Error:", error);
@@ -53,7 +54,7 @@ window.signInWithGoogle = async function () {
 
 
 // =====================================================
-// 🔥 HANDLE GOOGLE RETURN (FIRST LOGIN SAVE)
+// 🔥 HANDLE GOOGLE RETURN (SAVE USER)
 // =====================================================
 getRedirectResult(auth)
   .then(async (result) => {
@@ -78,34 +79,43 @@ getRedirectResult(auth)
 
 
 // =====================================================
-// 🔥 FINAL REDIRECT ENGINE (PERMANENT FIX)
+// 🔥 AUTH READY + REDIRECT ENGINE (FINAL FIX)
 // =====================================================
+let authInitialized = false;
+
 onAuthStateChanged(auth, (user) => {
 
-  const currentPage = window.location.pathname;
-  console.log("Auth check on:", currentPage);
-
-  // ⭐ USER LOGGED IN
-  if (user) {
-    console.log("Session active:", user.email);
-
-    // If user on landing page → go to ideology
-    if (
-      currentPage === "/" ||
-      currentPage.includes("index.html") ||
-      currentPage === ""
-    ) {
-      window.location.href = "/ideology";
-    }
+  // ⭐ Ignore first Firebase null state
+  if (!authInitialized) {
+    authInitialized = true;
+    console.log("Firebase auth initialized ⏳");
+    return;
   }
 
-  // ⭐ USER NOT LOGGED IN
-  else {
-    console.log("User not logged in");
+  const currentPage = window.location.pathname;
+  const loginRedirect = sessionStorage.getItem("loginRedirect");
 
+  console.log("Auth verified:", user ? user.email : "No user");
+  console.log("Current page:", currentPage);
+
+  // ================= USER LOGGED IN =================
+  if (user) {
+
+    // ⭐ Only redirect if login JUST happened
+    if (loginRedirect === "true") {
+      sessionStorage.removeItem("loginRedirect");
+      window.location.href = "/ideology.html";
+      return;
+    }
+
+  }
+
+  // ================= USER NOT LOGGED IN =================
+  else {
     // Protect ideology page
     if (currentPage.includes("ideology")) {
       window.location.href = "/";
+      return;
     }
   }
 
@@ -206,4 +216,4 @@ if (bookForm) {
       alert("Something went wrong.");
     }
   });
-      }
+}
