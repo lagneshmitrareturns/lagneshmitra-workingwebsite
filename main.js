@@ -24,31 +24,31 @@ import {
 
 
 // =====================================================
-// 🔥 CREATE GOOGLE PROVIDER (UPDATED FIX)
+// 🔥 GOOGLE PROVIDER
 // =====================================================
 const provider = new GoogleAuthProvider();
-
-// ⭐ VERY IMPORTANT (fixes login fail)
 provider.addScope("email");
 provider.addScope("profile");
-provider.setCustomParameters({
-  prompt: "select_account"
-});
+provider.setCustomParameters({ prompt: "select_account" });
 
 
 // =====================================================
-// 📌 MAKE LOGIN SESSION PERSIST (MOBILE FIX)
+// 🔥 SESSION PERSISTENCE (VERY IMPORTANT)
 // =====================================================
 await setPersistence(auth, browserLocalPersistence);
 
 
 // =====================================================
-// 📌 GOOGLE LOGIN BUTTON (GLOBAL)
+// 🔥 LOGIN BUTTON
 // =====================================================
 window.signInWithGoogle = async function () {
   try {
+    // ⭐ login intent flag (MOST IMPORTANT FIX)
+    sessionStorage.setItem("loginRedirect", "true");
+
     console.log("Redirecting to Google...");
     await signInWithRedirect(auth, provider);
+
   } catch (error) {
     console.error("Redirect Error:", error);
     alert("Google Login Failed ❌");
@@ -57,7 +57,7 @@ window.signInWithGoogle = async function () {
 
 
 // =====================================================
-// 📌 HANDLE GOOGLE REDIRECT RETURN (FIRST LOGIN)
+// 🔥 HANDLE REDIRECT RETURN
 // =====================================================
 getRedirectResult(auth)
   .then(async (result) => {
@@ -67,7 +67,6 @@ getRedirectResult(auth)
     const user = result.user;
     console.log("User Logged In:", user.email);
 
-    // 🔥 Save user first time
     await setDoc(doc(db, "lm_users", user.uid), {
       uid: user.uid,
       name: user.displayName,
@@ -85,26 +84,37 @@ getRedirectResult(auth)
 
 
 // =====================================================
-// 🔥 AUTH STATE REDIRECT ENGINE (MOST IMPORTANT)
+// 🔥 SMART REDIRECT ENGINE (FINAL VERSION)
 // =====================================================
 onAuthStateChanged(auth, (user) => {
 
   const currentPage = window.location.pathname;
+  const loginRedirect = sessionStorage.getItem("loginRedirect");
 
+  console.log("Auth check on:", currentPage);
+
+  // ================= USER LOGGED IN =================
   if (user) {
+
     console.log("Session active:", user.email);
 
-    // If user on landing page → send to ideology
-    if (currentPage === "/" || currentPage.includes("index")) {
+    // ⭐ ONLY redirect if login just happened
+    if (loginRedirect === "true") {
+      sessionStorage.removeItem("loginRedirect");
       window.location.href = "/ideology.html";
+      return;
     }
 
-  } else {
-    console.log("User not logged in");
+  }
 
-    // If user tries protected page → send back home
+  // ================= USER NOT LOGGED IN =================
+  else {
+    console.log("No active session");
+
+    // Protect ideology page
     if (currentPage.includes("ideology")) {
       window.location.href = "/";
+      return;
     }
   }
 
@@ -112,7 +122,7 @@ onAuthStateChanged(auth, (user) => {
 
 
 // =====================================================
-// 📌 WEBSITE VISIT TRACKER (RESTORED)
+// 📌 VISIT TRACKER
 // =====================================================
 async function trackVisit() {
   try {
@@ -131,7 +141,7 @@ trackVisit();
 
 
 // =====================================================
-// 📌 CONSULTATION FORM (RESTORED)
+// 📌 CONSULTATION FORM
 // =====================================================
 const consultForm = document.getElementById("consultForm");
 
@@ -170,7 +180,7 @@ if (consultForm) {
 
 
 // =====================================================
-// 📌 BOOK EARLY ACCESS FORM (RESTORED)
+// 📌 BOOK EARLY ACCESS FORM
 // =====================================================
 const bookForm = document.getElementById("bookForm");
 
