@@ -40,9 +40,9 @@ provider.setCustomParameters({ prompt: "select_account" });
 
 
 // ========================================
-// 🔥 CONNECT G BUTTON (MODULE SAFE)
+// 🔥 CONNECT G BUTTON
 // ========================================
-const gBtn = document.getElementById("googleLoginBtn");
+const gBtn = document.querySelector(".g-btn");
 
 if (gBtn) {
   gBtn.addEventListener("click", async () => {
@@ -53,18 +53,17 @@ if (gBtn) {
 
 
 // ========================================
-// 💣 GOOGLE RETURN HANDLER (ONLY REDIRECT HERE)
+// 💣 GOOGLE RETURN HANDLER (REAL REDIRECT)
 // ========================================
 getRedirectResult(auth)
   .then(async (result) => {
 
-    // 👉 User returning from Google login
     if (!result?.user) return;
 
     const user = result.user;
     console.log("🔥 LOGIN SUCCESS:", user.email);
 
-    // 🔥 Save user to Firestore (first login / update)
+    // Save / update user in Firestore
     await setDoc(doc(db, "lm_users", user.uid), {
       uid: user.uid,
       name: user.displayName,
@@ -75,8 +74,8 @@ getRedirectResult(auth)
 
     console.log("User saved in Firestore ✅");
 
-    // ⭐ FINAL REDIRECT (ONLY PLACE WHERE REDIRECT HAPPENS)
-    window.location.href = "/ideology.html";
+    // ⭐⭐⭐ FINAL REDIRECT (VERCEL SAFE)
+    window.location.replace("/ideology");
 
   })
   .catch((error) => {
@@ -85,15 +84,25 @@ getRedirectResult(auth)
 
 
 // ========================================
-// 🔐 SESSION LOG (NO REDIRECT HERE)
+// 🔐 SESSION CHECK (AUTO REDIRECT IF ALREADY LOGGED IN)
 // ========================================
 onAuthStateChanged(auth, (user) => {
-  console.log("Session state:", user ? user.email : "No user");
+
+  const path = window.location.pathname;
+
+  if (!user) return;
+
+  console.log("User session active:", user.email);
+
+  // Agar logged in user landing page kholta hai → ideology bhejo
+  if (path === "/" || path.includes("index")) {
+    window.location.replace("/ideology");
+  }
 });
 
 
 // ========================================
-// 📊 WEBSITE VISIT TRACKER (RESTORED)
+// 📊 WEBSITE VISIT TRACKER
 // ========================================
 async function trackVisit() {
   try {
@@ -112,7 +121,7 @@ trackVisit();
 
 
 // ========================================
-// 📌 CONSULTATION FORM (RESTORED)
+// 📌 CONSULTATION FORM
 // ========================================
 const consultForm = document.getElementById("consultForm");
 
@@ -151,7 +160,7 @@ if (consultForm) {
 
 
 // ========================================
-// 📌 BOOK EARLY ACCESS FORM (RESTORED)
+// 📌 BOOK EARLY ACCESS FORM
 // ========================================
 const bookForm = document.getElementById("bookForm");
 
