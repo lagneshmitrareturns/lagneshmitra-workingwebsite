@@ -1,19 +1,17 @@
 console.log("MAIN JS LOADED ✅");
 
-// ========================================
-// 🔥 IMPORT FIREBASE (FINAL)
-// ========================================
-import { db, auth, provider } from "./firebase-config.js";
+import { db, auth } from "./firebase-config.js";
 
 import {
+  doc,
+  setDoc,
   collection,
   addDoc,
-  serverTimestamp,
-  doc,
-  setDoc
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 import {
+  GoogleAuthProvider,
   signInWithRedirect,
   setPersistence,
   browserLocalPersistence,
@@ -22,62 +20,47 @@ import {
 
 
 // ========================================
-// 🔥 AUTH PERSISTENCE (MOBILE FIX)
+// 🔥 AUTH PERSISTENCE (VERY IMPORTANT)
 // ========================================
 await setPersistence(auth, browserLocalPersistence);
-console.log("Auth persistence ready ✅");
 
 
 // ========================================
-// 🔥 GOOGLE LOGIN BUTTON CONNECTOR
+// 🔥 GOOGLE PROVIDER
+// ========================================
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({ prompt: "select_account" });
+
+
+// ========================================
+// 🔥 CONNECT GOOGLE BUTTON (AFTER PAGE LOAD)
 // ========================================
 window.addEventListener("DOMContentLoaded", () => {
 
   const btn = document.getElementById("googleLoginBtn");
-
-  if (!btn) {
-    console.log("Google button not found on this page");
-    return;
-  }
-
-  console.log("Google button connected ✅");
+  if (!btn) return;
 
   btn.addEventListener("click", async () => {
-    try {
-      console.log("Redirecting to Google...");
-      await signInWithRedirect(auth, provider);
-    } catch (err) {
-      console.error("Google redirect error:", err);
-      alert("Google Login Failed ❌");
-    }
+    console.log("Redirecting to Google...");
+    await signInWithRedirect(auth, provider);
   });
 
 });
 
 
 // ========================================
-// ⭐⭐⭐ MASTER LOGIN DETECTOR ⭐⭐⭐
+// ⭐ REAL LOGIN DETECTOR (THE MAGIC)
 // ========================================
 onAuthStateChanged(auth, async (user) => {
 
-  const path = window.location.pathname;
-
-  // ===== USER NOT LOGGED IN =====
   if (!user) {
     console.log("User not logged in");
-
-    // Protect ideology page
-    if (path.includes("ideology")) {
-      window.location.href = "/";
-    }
-
     return;
   }
 
-  // ===== USER LOGGED IN =====
   console.log("User logged in:", user.email);
 
-  // Save/update user in Firestore
+  // Save / update user in Firestore
   await setDoc(doc(db, "lm_users", user.uid), {
     uid: user.uid,
     name: user.displayName,
@@ -86,17 +69,18 @@ onAuthStateChanged(auth, async (user) => {
     createdAt: serverTimestamp()
   });
 
-  // If logged-in user opens landing page → redirect
+  // ⭐ REDIRECT IF USER ON LANDING PAGE
+  const path = window.location.pathname;
+
   if (path === "/" || path.includes("index")) {
     console.log("Redirecting to ideology...");
     window.location.href = "/ideology.html";
   }
-
 });
 
 
 // ========================================
-// 📊 WEBSITE VISIT TRACKER
+// 📊 VISIT TRACKER (RESTORED)
 // ========================================
 async function trackVisit() {
   try {
@@ -106,9 +90,6 @@ async function trackVisit() {
       source: document.referrer || "direct",
       createdAt: serverTimestamp()
     });
-    console.log("Visit tracked ✅");
-  } catch (err) {
-    console.error("Visit tracking error:", err);
-  }
+  } catch {}
 }
 trackVisit();
