@@ -24,7 +24,7 @@ import {
 
 
 // ========================================
-// 🔥 AUTH PERSISTENCE (VERY IMPORTANT)
+// 🔥 AUTH PERSISTENCE (CRITICAL)
 // ========================================
 await setPersistence(auth, browserLocalPersistence);
 console.log("Auth persistence ready ✅");
@@ -40,7 +40,7 @@ provider.setCustomParameters({ prompt: "select_account" });
 
 
 // ========================================
-// 🔥 CONNECT G BUTTON
+// 🔥 CONNECT GOOGLE BUTTON
 // ========================================
 const gBtn = document.querySelector(".g-btn");
 
@@ -53,17 +53,18 @@ if (gBtn) {
 
 
 // ========================================
-// 💣 GOOGLE RETURN HANDLER (REAL REDIRECT)
+// 💣 GOOGLE RETURN HANDLER (PRIMARY REDIRECT)
 // ========================================
 getRedirectResult(auth)
   .then(async (result) => {
 
+    // 👉 Only runs AFTER returning from Google
     if (!result?.user) return;
 
     const user = result.user;
     console.log("🔥 LOGIN SUCCESS:", user.email);
 
-    // Save / update user in Firestore
+    // Save / update user
     await setDoc(doc(db, "lm_users", user.uid), {
       uid: user.uid,
       name: user.displayName,
@@ -74,8 +75,9 @@ getRedirectResult(auth)
 
     console.log("User saved in Firestore ✅");
 
-    // ⭐⭐⭐ FINAL REDIRECT (VERCEL SAFE)
-    window.location.replace("/ideology");
+    // ⭐ FINAL REDIRECT (VERCEL SAFE)
+    console.log("Redirecting to ideology page...");
+    window.location.replace("/ideology.html");
 
   })
   .catch((error) => {
@@ -84,19 +86,23 @@ getRedirectResult(auth)
 
 
 // ========================================
-// 🔐 SESSION CHECK (AUTO REDIRECT IF ALREADY LOGGED IN)
+// 🔐 SESSION CHECK (SECONDARY REDIRECT)
 // ========================================
 onAuthStateChanged(auth, (user) => {
 
-  const path = window.location.pathname;
-
   if (!user) return;
 
-  console.log("User session active:", user.email);
+  const path = window.location.pathname;
+  console.log("Session active:", user.email);
 
-  // Agar logged in user landing page kholta hai → ideology bhejo
-  if (path === "/" || path.includes("index")) {
-    window.location.replace("/ideology");
+  // If logged-in user opens landing page manually
+  if (
+    path === "/" ||
+    path.includes("index.html") ||
+    path === ""
+  ) {
+    console.log("Auto redirecting logged-in user...");
+    window.location.replace("/ideology.html");
   }
 });
 
