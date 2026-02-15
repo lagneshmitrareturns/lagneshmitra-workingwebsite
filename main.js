@@ -1,9 +1,9 @@
 console.log("MAIN JS LOADED ✅");
 
 // ===============================
-// 🔥 IMPORT FIREBASE DB + AUTH
+// 🔥 IMPORT FIREBASE DB + AUTH + PROVIDER
 // ===============================
-import { db, auth } from "./firebase-config.js";
+import { db, auth, provider } from "./firebase-config.js";
 
 import {
   collection,
@@ -14,7 +14,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 import {
-  GoogleAuthProvider,
   signInWithRedirect,
   getRedirectResult,
   onAuthStateChanged,
@@ -24,7 +23,7 @@ import {
 
 
 // =====================================================
-// 🔥 INIT AUTH SYSTEM (CRITICAL FIX)
+// 🔥 INIT AUTH SYSTEM
 // =====================================================
 async function initAuthSystem() {
 
@@ -42,17 +41,11 @@ initAuthSystem();
 // =====================================================
 function startAuthFlow() {
 
-  const provider = new GoogleAuthProvider();
-  provider.addScope("email");
-  provider.addScope("profile");
-  provider.setCustomParameters({ prompt: "select_account" });
-
   // ================= GOOGLE LOGIN BUTTON =================
   window.signInWithGoogle = async function () {
     try {
       console.log("Redirecting to Google...");
 
-      // ⭐ save redirect intent BEFORE going to Google
       sessionStorage.setItem("afterLoginRedirect", "/ideology.html");
 
       await signInWithRedirect(auth, provider);
@@ -73,7 +66,7 @@ function startAuthFlow() {
       const user = result.user;
       console.log("User Logged In:", user.email);
 
-      // Save user in Firestore (first login)
+      // Save user first time
       await setDoc(doc(db, "lm_users", user.uid), {
         uid: user.uid,
         name: user.displayName,
@@ -91,13 +84,12 @@ function startAuthFlow() {
 
 
   // =====================================================
-  // 🔥 FINAL SESSION + REDIRECT ENGINE (MASTER FIX)
+  // 🔥 SESSION + REDIRECT ENGINE
   // =====================================================
   let authReady = false;
 
   onAuthStateChanged(auth, (user) => {
 
-    // ⭐ Ignore first null Firebase state
     if (!authReady) {
       authReady = true;
       console.log("Firebase auth initialized ⏳");
@@ -108,19 +100,16 @@ function startAuthFlow() {
     const redirectAfterLogin = sessionStorage.getItem("afterLoginRedirect");
 
     console.log("Auth checked:", user ? user.email : "No user");
-    console.log("Current page:", currentPage);
 
-    // ================= USER LOGGED IN =================
+    // USER LOGGED IN
     if (user) {
 
-      // ⭐ Redirect only ONCE after login
       if (redirectAfterLogin) {
         sessionStorage.removeItem("afterLoginRedirect");
         window.location.replace("/ideology.html");
         return;
       }
 
-      // If user manually opens landing page while logged in
       if (
         currentPage === "/" ||
         currentPage.includes("index.html") ||
@@ -129,14 +118,12 @@ function startAuthFlow() {
         window.location.replace("/ideology.html");
         return;
       }
-
     }
 
-    // ================= USER NOT LOGGED IN =================
+    // USER NOT LOGGED IN
     else {
       if (currentPage.includes("ideology")) {
         window.location.replace("/");
-        return;
       }
     }
 
