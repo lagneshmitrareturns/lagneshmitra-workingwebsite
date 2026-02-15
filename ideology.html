@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>LagneshMitra Ideology</title>
+
+  <!-- Separate CSS -->
+  <link rel="stylesheet" href="ideology.css"/>
+</head>
+
+<body>
+
+  <!-- =========================
+       USER PANEL
+  ========================== -->
+  <div class="user-panel">
+    <img id="userPhoto" class="user-photo" />
+    
+    <div class="user-info">
+      <div id="userName">User</div>
+      <div id="userEmail">email</div>
+    </div>
+
+    <button id="logoutBtn">Logout</button>
+  </div>
+
+
+  <!-- =========================
+       IDEOLOGY VIEWER
+  ========================== -->
+  <div class="viewer">
+    <img id="pageImage" src="" />
+    
+    <div class="nav">
+      <button id="prevBtn">⟵</button>
+      <span id="pageIndicator">Page</span>
+      <button id="nextBtn">⟶</button>
+    </div>
+  </div>
+
+
+  <!-- =========================
+       CTA BUTTONS
+  ========================== -->
+  <div class="cta">
+    <a href="/" class="cta-btn">Back to Home</a>
+    <a href="#consult" class="cta-btn gold">Book Consultation</a>
+  </div>
+
+
+  <!-- Firebase Config -->
+  <script type="module" src="firebase-config.js"></script>
+
+  <!-- Ideology JS -->
+  <script type="module" src="ideology.js"></script>
+
+</body>
+</html>
