@@ -1,16 +1,12 @@
 {
-  "routes": [
+  "rewrites": [
     {
-      "src": "/__/auth/(.*)",
-      "dest": "/__/auth/$1"
+      "source": "/__/auth/:path*",
+      "destination": "https://lagneshmitra-e57b8.firebaseapp.com/__/auth/:path*"
     },
     {
-      "src": "/ideology",
-      "dest": "/ideology.html"
-    },
-    {
-      "src": "/ideology.html",
-      "dest": "/ideology.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
